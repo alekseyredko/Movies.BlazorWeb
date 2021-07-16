@@ -1,0 +1,53 @@
+﻿@page "/movies"
+
+
+@inject IMovieService _movieService
+@inject NavigationManager _navigationManager
+
+<h1>Movies</h1>
+
+
+@if (_movies == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if (_movies.ResultType == ResultType.Ok)
+    {
+        <table class="table">
+            <thead>
+
+            </thead>
+            <tbody>
+                @foreach (var movie in _movies.Value)
+                {
+                    var link = $"/movies/{movie.MovieId}";
+                    <tr>
+                        <td>
+                            <NavLink class="nav-link" href="@link">
+                                @movie.MovieName
+                            </NavLink>
+                        </td>
+                        <td>@movie.Duration</td>
+                        <td>@movie.Rate</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <ErrorResult Result=@_movies/>
+    }
+}
+
+@code {
+    private Result<IEnumerable<Movie>> _movies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _movies = await _movieService.GetAllMoviesAsync();
+    }
+}

@@ -1,5 +1,6 @@
 ﻿@page "/movies/{id:int}"
 
+
 @inject IMovieService _movieService
 @inject IReviewService _reviewService
 
@@ -18,7 +19,7 @@ else
     }
     else
     {
-        
+        <ErrorResult Result=@_movie/>
     }
 }
 
