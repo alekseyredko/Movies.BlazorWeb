@@ -1,0 +1,41 @@
+﻿@page "/movies/{id:int}"
+
+@inject IMovieService _movieService
+@inject IReviewService _reviewService
+
+@if (_movie == null)
+{
+    <h3>Loading</h3>
+}
+else
+{
+    @if (_movie.ResultType == ResultType.Ok)
+    {
+        <h1>@_movie.Value.MovieName</h1>
+
+        <h2>@_movie.Value.Rate</h2>
+
+    }
+    else
+    {
+        
+    }
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Result<Movie> _movie;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _movie = await _movieService.GetMovieAsync(Id);
+
+
+        await base.OnInitializedAsync();
+    }
+
+}

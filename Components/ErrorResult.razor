@@ -1,0 +1,21 @@
+﻿
+<h3>ShowErrorsComponent</h3>
+
+<div>
+    <h2>@_movies.Title</h2>
+    <table class="table-danger">
+        <tbody>
+        @foreach (var error in _movies.Errors)
+        {
+            <tr>
+                <td>@error.Key</td>
+                <td>@error.Value</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+}

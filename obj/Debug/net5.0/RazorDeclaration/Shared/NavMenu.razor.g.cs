@@ -82,6 +82,27 @@ using Movies.BlazorWeb.Shared;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 11 "C:\Users\aredzko\Documents\Projects\Movies\Movies.BlazorWeb\_Imports.razor"
+using Movies.Data.Services.Interfaces;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 12 "C:\Users\aredzko\Documents\Projects\Movies\Movies.BlazorWeb\_Imports.razor"
+using Movies.Data.Results;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 13 "C:\Users\aredzko\Documents\Projects\Movies\Movies.BlazorWeb\_Imports.razor"
+using Movies.Data.Models;
+
+#line default
+#line hidden
+#nullable disable
     public partial class NavMenu : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
