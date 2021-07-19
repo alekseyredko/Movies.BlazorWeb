@@ -1,5 +1,5 @@
 ﻿@page "/movies/{id:int}"
-
+@attribute [Authorize(Roles = "Person")]
 
 @inject IMovieService _movieService
 @inject IReviewService _reviewService
@@ -19,7 +19,7 @@ else
     }
     else
     {
-        <ErrorResult Result=@_movie/>
+        <ErrorResult Result=@_movie />
     }
 }
 

@@ -1,28 +1,31 @@
 ﻿<h3>ErrorResult</h3>
 
 <div>
-    <h2>@Result.Title</h2>
-    <table class="table-danger">
-        <tbody>
-        @foreach (var error in Result.Errors)
-        {
-            <tr>
-                <td><h3>@error.Key: </h3></td>
-                <td>
-                    <table>
-                        @foreach (var desc in error.Value)
-                        {
-                            <tr>
-                                <td>@desc</td>
-                            </tr>
-                        }
-                    </table>
-                </td>
-            </tr>
+    @if (Result != null)
+    {
+        <h2>@Result.Title</h2>
+        <table class="table-danger">
+            <tbody>
+            @foreach (var error in Result.Errors)
+            {
+                <tr>
+                    <td><h3>@error.Key: </h3></td>
+                    <td>
+                        <table>
+                            @foreach (var desc in error.Value)
+                            {
+                                <tr>
+                                    <td>@desc</td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
            
-        }
-        </tbody>
-    </table>
+            }
+            </tbody>
+        </table>
+    }
 </div>
 
 @code {

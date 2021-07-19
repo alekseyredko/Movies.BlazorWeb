@@ -9,7 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Authorization;
 using Movies.Infrastructure.Extensions;
+using Movies.Infrastructure.Services;
+using Movies.Infrastructure.Services.Interfaces;
 
 namespace Movies.BlazorWeb
 {
@@ -31,6 +34,11 @@ namespace Movies.BlazorWeb
 
             services.AddDataAccessServices();
             services.RegisterValidatorsAsServices();
+
+            services.AddScoped<AuthenticationStateProvider, UserAuthenticationStateProvider>();
+            services.AddScoped<ICustomAuthentication, UserAuthenticationStateProvider>();
+
+            services.AddAutomapperAndProfile();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
