@@ -1,18 +1,16 @@
 ﻿@page "/login"
-@using Movies.Infrastructure.Services.Interfaces
-@using Movies.Infrastructure.Models
 
-@inject AuthenticationStateProvider authenticationStateProvider;
 @inject ICustomAuthentication customAuthentication;
 @inject NavigationManager NavigationManager
 
 
 <h3>Log in</h3>
 
+<h6>login</h6>
 <input type="text" @bind-value="login"/>
 <h6>Password</h6>
 <input id="Password1" type="password" @bind-value="password"/>
-<input id="Button1" type="button" value="button" @onclick="LogUsername"/>
+<button @onclick="LogUsername">Login</button>
 
 @if (response != null)
 {
@@ -40,7 +38,7 @@
             Login = login,
             Password = password
         };
-        response = await ((ICustomAuthentication)authenticationStateProvider).TryLoginAsync(userRequest);
+        response = await customAuthentication.TryLoginAsync(userRequest);
         if (response.ResultType == ResultType.Ok)
         {
             NavigationManager.NavigateTo("/");

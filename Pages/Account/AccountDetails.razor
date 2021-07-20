@@ -1,0 +1,41 @@
+﻿@page "/account"
+
+
+@inject IUserService _userService;
+@inject ICustomAuthentication _authentication;
+@inject ServerAuthenticationStateProvider _authenticationProvider;
+
+<h3>AccountDetails</h3>
+
+@if (user != null)
+{
+    @if (user.ResultType == ResultType.Ok)
+    {
+        <h2>@user.Value.Login</h2>
+        
+        <h3>Roles:</h3>
+        <ul>
+            @foreach (var role in user.Value.Roles)
+            {
+                <li><h4>@role</h4></li>
+            }
+        </ul>
+
+    }
+    else
+    {
+        <ErrorResult Result="user"/>
+    }
+}
+
+@code {
+    private Result<User> user { get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        user = await _authentication.GetCurrentUserAsync();
+
+    }
+
+}
