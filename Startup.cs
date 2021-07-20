@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Components.Server;
 using Movies.Infrastructure.Extensions;
 using Movies.Infrastructure.Services;
 using Movies.Infrastructure.Services.Interfaces;
+using Newtonsoft.Json;
+using Blazored.LocalStorage;
 
 namespace Movies.BlazorWeb
 {
@@ -30,7 +32,13 @@ namespace Movies.BlazorWeb
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            services.AddRazorPages().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
+
+            services.AddBlazoredLocalStorage();
+
             services.AddServerSideBlazor();
 
             services.AddDataAccessServices();
