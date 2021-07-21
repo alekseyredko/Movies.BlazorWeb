@@ -15,7 +15,6 @@ using Movies.Infrastructure.Extensions;
 using Movies.Infrastructure.Services;
 using Movies.Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
-using Blazored.LocalStorage;
 
 namespace Movies.BlazorWeb
 {
@@ -35,9 +34,7 @@ namespace Movies.BlazorWeb
             services.AddRazorPages().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            });
-
-            services.AddBlazoredLocalStorage();
+            });      
 
             services.AddServerSideBlazor();
 

@@ -4,6 +4,7 @@
 @inject IUserService _userService;
 @inject ICustomAuthentication _authentication;
 @inject ServerAuthenticationStateProvider _authenticationProvider;
+@inject NavigationManager NavigationManager;
 
 <h3>AccountDetails</h3>
 
@@ -12,30 +13,61 @@
     @if (user.ResultType == ResultType.Ok)
     {
         <h2>@user.Value.Login</h2>
-        
+
         <h3>Roles:</h3>
         <ul>
             @foreach (var role in user.Value.Roles)
             {
-                <li><h4>@role</h4></li>
+                <li><h3>@role</h3></li>
             }
         </ul>
+
+        <input @bind-value="country" />
+
+        <button class="btn-primary" @onclick="RegisterAsProducer">Register as Producer</button>
+
+
 
     }
     else
     {
-        <ErrorResult Result="user"/>
+        <ErrorResult Result="user" />
+
+    }
+
+    @if (producer != null)
+    {
+        @if (producer.ResultType != ResultType.Ok)
+        {
+            <ErrorResult Result="producer" />
+        }
     }
 }
 
 @code {
-    private Result<User> user { get; set;}
+    private string country { get; set; }
+    private Result<GetUserResponse> user { get; set; }
+    private Result<ProducerResponse> producer { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
 
-        user = await _authentication.GetCurrentUserAsync();
+        user = await _authentication.GetCurrentUserDataAsync();
 
     }
 
+    private async Task RegisterAsProducer()
+    {
+        var producerRequest = new ProducerRequest
+        {
+            Country = country
+        };
+
+        producer = await _authentication.TryRegisterAsProducerAsync(producerRequest);
+
+        if (producer.ResultType == ResultType.Ok)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
 }

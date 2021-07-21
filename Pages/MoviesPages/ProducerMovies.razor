@@ -1,6 +1,9 @@
-﻿@page "/movies"
+﻿@page "/producer/movies"
+
+@attribute [Authorize(Roles ="Producer")]
 
 @inject IMovieService _movieService
+@inject ICustomAuthentication _customAuthentication;
 @inject NavigationManager _navigationManager
 
 <h1>Movies</h1>
@@ -21,13 +24,12 @@ else
             <tbody>
                 @foreach (var movie in _movies.Value)
                 {
-                    var link = $"/movies/{movie.MovieId}";                    
-
+                    var link = $"/movies/{movie.MovieId}";
                     <tr>
                         <td>
                             <NavLink class="nav-link" href="@link">
                                 @movie.MovieName
-                            </NavLink>                            
+                            </NavLink>
                         </td>
                         <td>@movie.Duration</td>
                         <td>@movie.Rate</td>
@@ -39,15 +41,26 @@ else
     }
     else
     {
-        <ErrorResult Result=@_movies/>
+        <ErrorResult Result=@_movies />
     }
 }
 
 @code {
-    private Result<IEnumerable<Movie>> _movies;
+
+    private Result<IEnumerable<Movie>> _movies { get; set; }
+    private Result<GetUserResponse> _currentUser { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _movies = await _movieService.GetAllMoviesAsync();
+        var movies = await _movieService.GetAllMoviesAsync();
+
+        _currentUser = await _customAuthentication.GetCurrentUserDataAsync();
+
+        if (movies.ResultType == ResultType.Ok && _currentUser.ResultType == ResultType.Ok)
+        {
+
+            _movies = movies;
+            _movies.Value = movies.Value.Where(x => x.ProducerId == _currentUser.Value.UserId);
+        }
     }
 }

@@ -1,10 +1,10 @@
 ﻿@page "/movies/{id:int}"
-@attribute [Authorize(Roles = "Person")]
 
 @inject IMovieService _movieService
 @inject IReviewService _reviewService
+@inject ICustomAuthentication _customAuthentication;
 
-@if (_movie == null)
+@if (_movie == null || _currentUser == null)
 {
     <h3>Loading</h3>
 }
@@ -13,8 +13,19 @@ else
     @if (_movie.ResultType == ResultType.Ok)
     {
         <h1>@_movie.Value.MovieName</h1>
-
         <h2>@_movie.Value.Rate</h2>
+
+        <AuthorizeView Roles="Producer">
+            <Authorized>
+                @if (_movie.Value.ProducerId == _currentUser.Value.UserId)
+                {
+                    <NavLink class="nav-link" href="@link">Edit</NavLink>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <p>Not authorized to edit</p>
+            </NotAuthorized>
+        </AuthorizeView>
 
     }
     else
@@ -28,15 +39,20 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private Result<Movie> _movie;
 
+    private Result<GetUserResponse> _currentUser;
+    private Result<Movie> _movie;
+    private string link;
+    
 
     protected override async Task OnInitializedAsync()
     {
         _movie = await _movieService.GetMovieAsync(Id);
-
+        _currentUser = await _customAuthentication.GetCurrentUserDataAsync();
 
         await base.OnInitializedAsync();
+
+        link = $"/movies/{Id}/edit";
     }
 
 }
