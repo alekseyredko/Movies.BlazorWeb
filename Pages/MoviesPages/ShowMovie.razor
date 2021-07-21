@@ -1,8 +1,6 @@
 ﻿@page "/movies/{id:int}"
 
-@inject IMovieService _movieService
-@inject IReviewService _reviewService
-@inject ICustomAuthentication _customAuthentication;
+
 
 @if (_movie == null || _currentUser == null)
 {
@@ -32,27 +30,4 @@ else
     {
         <ErrorResult Result=@_movie />
     }
-}
-
-
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-
-    private Result<GetUserResponse> _currentUser;
-    private Result<Movie> _movie;
-    private string link;
-    
-
-    protected override async Task OnInitializedAsync()
-    {
-        _movie = await _movieService.GetMovieAsync(Id);
-        _currentUser = await _customAuthentication.GetCurrentUserDataAsync();
-
-        await base.OnInitializedAsync();
-
-        link = $"/movies/{Id}/edit";
-    }
-
 }
