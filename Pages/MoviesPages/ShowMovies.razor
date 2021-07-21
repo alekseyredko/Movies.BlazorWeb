@@ -10,12 +10,22 @@ else
 {
     @if (_movies.ResultType == ResultType.Ok)
     {
+        <AuthorizeView Roles="Producer">
+            <Authorized>
+                <div>
+                    <input type="checkbox" name="my-movies"
+                           @onchange="ChangeMovieShowAsync" />
+                    <label for="my-movies">Only my movies</label>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+
         <table class="table">
             <thead>
 
             </thead>
             <tbody>
-                @foreach (var movie in _movies.Value)
+                @foreach (var movie in _moviesToShow)
                 {
                     var link = $"/movies/{movie.MovieId}";                    
                     <tr>
@@ -29,7 +39,7 @@ else
                         <td>
                             @if (_canShowEdit && _currentUser.Value.UserId == movie.ProducerId)
                             {
-                                var editLink = link + "/edit";
+                                var editLink = $"{link}/edit";
                                 <NavLink class="nav" href="@editLink">Edit</NavLink>
                             }
                         </td>
