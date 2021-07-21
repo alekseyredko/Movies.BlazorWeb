@@ -5,14 +5,17 @@
         if (Result.ResultType != ResultType.Ok)
         {
             <table class="table-danger">
-                <tbody>                    
-                    @foreach (var error in Result.Errors[Key])
+                <tbody>
+                    @if (Result.Errors.TryGetValue(Key, out var errors))
                     {
-                        <tr>                           
-                            <td>
-                                @error
-                            </td>
-                        </tr>
+                        @foreach (var error in errors)
+                        {
+                            <tr>
+                                <td>
+                                    @error
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
