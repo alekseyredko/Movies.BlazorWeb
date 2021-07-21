@@ -1,10 +1,6 @@
 ﻿@page "/movies"
 
-@inject IMovieService _movieService
-@inject NavigationManager _navigationManager
-
 <h1>Movies</h1>
-
 
 @if (_movies == null)
 {
@@ -22,32 +18,28 @@ else
                 @foreach (var movie in _movies.Value)
                 {
                     var link = $"/movies/{movie.MovieId}";                    
-
                     <tr>
                         <td>
-                            <NavLink class="nav-link" href="@link">
+                            <NavLink class="nav" href="@link">
                                 @movie.MovieName
                             </NavLink>                            
                         </td>
-                        <td>@movie.Duration</td>
-                        <td>@movie.Rate</td>
+                        <td><p>Duration: @movie.Duration</p></td>
+                        <td><p>Rate: @movie.Rate</p></td>                        
+                        <td>
+                            @if (_canShowEdit && _currentUser.Value.UserId == movie.ProducerId)
+                            {
+                                var editLink = link + "/edit";
+                                <NavLink class="nav" href="@editLink">Edit</NavLink>
+                            }
+                        </td>
                     </tr>
-
                 }
             </tbody>
-        </table>
+        </table>        
     }
     else
     {
         <ErrorResult Result=@_movies/>
-    }
-}
-
-@code {
-    private Result<IEnumerable<Movie>> _movies;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _movies = await _movieService.GetAllMoviesAsync();
     }
 }
