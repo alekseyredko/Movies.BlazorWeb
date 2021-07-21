@@ -50,9 +50,7 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
                 _canShowEdit = _currentUser.Value.Roles.Contains(UserRoles.Producer);
             }
         }
-
-       
-
+      
         private async Task ChangeMovieShowAsync(ChangeEventArgs e)
         {           
             if ((bool)e.Value)

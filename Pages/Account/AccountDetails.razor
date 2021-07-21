@@ -1,11 +1,5 @@
 ﻿@page "/account"
 
-
-@inject IUserService _userService;
-@inject ICustomAuthentication _authentication;
-@inject ServerAuthenticationStateProvider _authenticationProvider;
-@inject NavigationManager NavigationManager;
-
 <h3>AccountDetails</h3>
 
 @if (user != null)
@@ -15,18 +9,28 @@
         <h2>@user.Value.Login</h2>
 
         <h3>Roles:</h3>
-        <ul>
+        <ul>            
             @foreach (var role in user.Value.Roles)
             {
-                <li><h3>@role</h3></li>
+                <li><p>@role</p></li>
             }
         </ul>
 
-        <input @bind-value="country" />
-
-        <button class="btn-primary" @onclick="RegisterAsProducer">Register as Producer</button>
 
 
+        @if (!user.Value.Roles.Contains(UserRoles.Producer))
+        {
+            <label>Country</label>
+            <input @bind-value="country" />
+            <button class="btn-primary" @onclick="RegisterAsProducer">Register as Producer</button>
+        }
+
+        @if (!user.Value.Roles.Contains(UserRoles.Reviewer))
+        {
+            <label>NickName</label>
+            <input @bind-value="country" />
+            <button class="btn-primary" @onclick="RegisterAsReviewer">Register as Reviewer</button>
+        }
 
     }
     else
@@ -40,34 +44,6 @@
         @if (producer.ResultType != ResultType.Ok)
         {
             <ErrorResult Result="producer" />
-        }
-    }
-}
-
-@code {
-    private string country { get; set; }
-    private Result<GetUserResponse> user { get; set; }
-    private Result<ProducerResponse> producer { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        user = await _authentication.GetCurrentUserDataAsync();
-
-    }
-
-    private async Task RegisterAsProducer()
-    {
-        var producerRequest = new ProducerRequest
-        {
-            Country = country
-        };
-
-        producer = await _authentication.TryRegisterAsProducerAsync(producerRequest);
-
-        if (producer.ResultType == ResultType.Ok)
-        {
-            NavigationManager.NavigateTo("/");
         }
     }
 }

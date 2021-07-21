@@ -1,12 +1,5 @@
 ﻿@page "/movies/{id:int}/edit"
 
-@attribute [Authorize(Roles = "Producer")]
-
-@inject IMovieService _movieService;
-@inject ICustomAuthentication _customAuthentication;
-@inject IMapper _mapper;
-
-
 <h3>EditMovie</h3>
 
 @if (result == null || _currentUser == null)
@@ -15,81 +8,20 @@
 }
 else
 {
-    <p>Movie name:</p>
-    <input type="text" @bind="@movieName" />
-    <p>Duration:</p>
-    <input type="text" @bind="@duration" />
-
-    <button @onclick="UpdateMovieAsync">Submit</button>
-
-    @if (updateResult != null)
+    if (result.ResultType == ResultType.Ok)
     {
-        @if (updateResult.ResultType != ResultType.Ok)
-        {
-            <ErrorResult Result="updateResult" />
-        }
-        else
-        {
-            <p>Success</p>
-        }
+        <p>Movie name:</p>
+        <SpecificErrorResult Result="updateResult" Key="MovieName" />
+        <input type="text" @bind="@movieName" />
+
+        <p>Duration:</p>
+        <input type="text" @bind="@duration" />
+
+        <button @onclick="UpdateMovieAsync">Submit</button>
+
     }
-
-    @if (result != null)
+    else
     {
-        @if (result.ResultType != ResultType.Ok)
-        {
-            <ErrorResult Result="updateResult" />
-        }        
-    }
-}
-
-
-
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-    private string movieName;
-
-    private string duration;
-
-    private Result<GetUserResponse> _currentUser;
-
-    private Result<MovieResponse> result;
-
-    private Result<MovieResponse> updateResult;
-
-    protected override async Task OnParametersSetAsync()
-    {
-        var movie = await _movieService.GetMovieAsync(Id);
-
-        result = _mapper.Map<Result<Movie>, Result<MovieResponse>>(movie);
-        _currentUser = await _customAuthentication.GetCurrentUserDataAsync();
-
-        if (result.ResultType == ResultType.Ok)
-        {
-            movieName = result.Value.MovieName;
-            duration = result.Value.Duration.ToString();
-        }
-
-        await base.OnParametersSetAsync();
-    }
-
-    private async Task UpdateMovieAsync()
-    {
-        if (TimeSpan.TryParse(duration, out TimeSpan timeSpan))
-        {
-            var request = new Movie
-            {
-                MovieName = movieName,
-                Duration = timeSpan,
-                ProducerId = _currentUser.Value.UserId
-            };
-
-            var response = await _movieService.UpdateMovieAsync(_currentUser.Value.UserId, Id, request);
-
-            updateResult = _mapper.Map<Result<Movie>, Result<MovieResponse>>(response);
-        }
-
+        <ErrorResult Result="result" />
     }
 }

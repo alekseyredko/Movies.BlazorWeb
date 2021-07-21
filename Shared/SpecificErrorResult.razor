@@ -1,0 +1,29 @@
+﻿
+<div>
+    @if (Result != null && !string.IsNullOrEmpty(Key))
+    {        
+        if (Result.ResultType != ResultType.Ok)
+        {
+            <table class="table-danger">
+                <tbody>                    
+                    @foreach (var error in Result.Errors[Key])
+                    {
+                        <tr>                           
+                            <td>
+                                @error
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Result Result { get; set; }
+
+    [Parameter]
+    public string Key { get; set; }
+}
