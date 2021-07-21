@@ -26,6 +26,9 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
         [Inject]
         private IMapper _mapper { get; set; }
 
+        [Inject]
+        private NavigationManager _navigationManager { get; set; }
+
         [Parameter]
         public int Id { get; set; }
 
@@ -69,6 +72,11 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
                 var response = await _movieService.UpdateMovieAsync(_currentUser.Value.UserId, Id, request);
 
                 updateResult = _mapper.Map<Result<Movie>, Result<MovieResponse>>(response);
+
+                if (updateResult.ResultType == ResultType.Ok)
+                {
+                    _navigationManager.NavigateTo($"movies/{updateResult.Value.MovieId}");
+                }
             }
 
         }
