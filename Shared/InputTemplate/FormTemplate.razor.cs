@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Movies.BlazorWeb.Shared
+namespace Movies.BlazorWeb.Shared.InputTemplate
 {
     public partial class FormTemplate<TItem, TResult>
     {
@@ -13,5 +13,8 @@ namespace Movies.BlazorWeb.Shared
 
         [Parameter]
         public TResult Result { get; set; }
+
+        [Parameter]
+        public IEnumerable<RenderFragment> RenderFragments { get; set; }
     }
 }
