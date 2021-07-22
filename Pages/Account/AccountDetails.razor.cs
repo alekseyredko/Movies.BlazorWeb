@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server;
 using Movies.Data.Results;
 using Movies.Data.Services.Interfaces;
@@ -16,10 +17,19 @@ namespace Movies.BlazorWeb.Pages.Account
     public partial class AccountDetails
     {
         [Inject]
+        private IProducerService _producerService { get; set; }
+
+        [Inject]
+        private IReviewService _reviewService { get; set; }
+
+        [Inject]
         private IUserService _userService { get; set; }
 
         [Inject]
         private ICustomAuthentication _authentication { get; set; }
+        
+        [Inject]
+        private IMapper _mapper { get; set; }
 
         [Inject]
         private ServerAuthenticationStateProvider _authenticationProvider { get; set; }
@@ -34,12 +44,24 @@ namespace Movies.BlazorWeb.Pages.Account
         private Result<ProducerResponse> registerProducerResult { get; set; }
         private Result<RegisterReviewerResponse> registerReviewerResult { get; set; }
 
+        private Result<ProducerResponse> producer { get; set; }
+        private Result<ReviewerResponse> reviewer { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             user = await _authentication.GetCurrentUserDataAsync();
 
-            registerProducerRequest = new ProducerRequest();
-            registerReviewerRequest = new RegisterReviewerRequest();
+            if (user.ResultType == ResultType.Ok)
+            {
+                registerProducerRequest = new ProducerRequest();
+                registerReviewerRequest = new RegisterReviewerRequest();
+
+                var getProducer = await _producerService.GetProducerAsync(user.Value.UserId);
+                producer = _mapper.Map<Result<ProducerResponse>>(getProducer);
+
+                var getReviewer = await _reviewService.GetReviewerAsync(user.Value.UserId);
+                reviewer = _mapper.Map<Result<ReviewerResponse>>(getReviewer);
+            }
         }
 
         private async Task RegisterAsProducer()
@@ -54,7 +76,12 @@ namespace Movies.BlazorWeb.Pages.Account
 
         private async Task RegisterAsReviewer()
         {
-            
+            registerReviewerResult = await _authentication.TryRegisterAsReviewerAsync(registerReviewerRequest);
+
+            if (registerReviewerResult.ResultType == ResultType.Ok)
+            {
+                NavigationManager.NavigateTo("/");
+            }
         }
 
     }
