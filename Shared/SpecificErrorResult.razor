@@ -1,5 +1,6 @@
 ﻿
 <div>
+    <label>@FieldName</label>
     @if (Result != null && !string.IsNullOrEmpty(Key))
     {        
         if (Result.ResultType != ResultType.Ok)
@@ -22,11 +23,3 @@
         }
     }
 </div>
-
-@code {
-    [Parameter]
-    public Result Result { get; set; }
-
-    [Parameter]
-    public string Key { get; set; }
-}

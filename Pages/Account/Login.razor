@@ -2,12 +2,10 @@
 
 <h3>Log in</h3>
 
-<h6>login</h6>
 <SpecificErrorResult Result="response" Key="Login" />
-<input type="text" @bind-value="login"/>
+<input type="text" @bind-value="loginUserRequest.Login"/>
 
-<h6>Password</h6>
 <SpecificErrorResult Result="response" Key="Password" />
-<input id="Password1" type="password" @bind-value="password"/>
+<input id="Password1" type="password" @bind-value="loginUserRequest.Password"/>
 
 <button @onclick="LogUsername">Login</button>

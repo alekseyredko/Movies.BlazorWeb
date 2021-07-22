@@ -4,12 +4,3 @@
 @inject NavigationManager _navigationManager;
 
 <h3>Logout</h3>
-
-@code { 
-    protected override async Task OnInitializedAsync()
-    {
-        await _customAuthentication.LogoutAsync();
-
-        _navigationManager.NavigateTo("/");        
-    }
-}

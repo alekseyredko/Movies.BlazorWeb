@@ -9,7 +9,7 @@
         <h2>@user.Value.Login</h2>
 
         <h3>Roles:</h3>
-        <ul>            
+        <ul>
             @foreach (var role in user.Value.Roles)
             {
                 <li><p>@role</p></li>
@@ -20,16 +20,20 @@
 
         @if (!user.Value.Roles.Contains(UserRoles.Producer))
         {
-            <label>Country</label>
-            <input @bind-value="country" />
-            <button class="btn-primary" @onclick="RegisterAsProducer">Register as Producer</button>
+            <form>
+                <SpecificErrorResult Key="Country" Result="registerProducerResult" />
+                <input type="text" @bind-value="registerProducerRequest.Country" />
+                <button @onclick="RegisterAsProducer">Register</button>
+            </form>
         }
 
         @if (!user.Value.Roles.Contains(UserRoles.Reviewer))
         {
-            <label>NickName</label>
-            <input @bind-value="country" />
-            <button class="btn-primary" @onclick="RegisterAsReviewer">Register as Reviewer</button>
+            <form>
+                <SpecificErrorResult Key="NickName" Result="registerReviewerResult" />
+                <input type="text" @bind-value="registerReviewerRequest.NickName" />
+                <button @onclick="RegisterAsReviewer">Register</button>
+            </form>
         }
 
     }
@@ -39,11 +43,11 @@
 
     }
 
-    @if (producer != null)
+    @if (registerProducerResult != null)
     {
-        @if (producer.ResultType != ResultType.Ok)
+        @if (registerProducerResult.ResultType != ResultType.Ok)
         {
-            <ErrorResult Result="producer" />
+            <ErrorResult Result="registerProducerResult" />
         }
     }
 }

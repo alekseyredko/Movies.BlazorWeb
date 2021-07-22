@@ -18,24 +18,23 @@ namespace Movies.BlazorWeb.Pages.Account
         [Inject]
         NavigationManager NavigationManager { get; set; }
 
-        private string login { get; set; }
-        private string password { get; set; }
-
+       
+        private LoginUserRequest loginUserRequest { get; set; }
         private Result<LoginUserResponse> response;
 
         [CascadingParameter] 
         Task<AuthenticationState> authenticationStateTask { get; set; }
 
-        private async Task LogUsername()
-        {
-            await authenticationStateTask;
 
-            var userRequest = new LoginUserRequest()
-            {
-                Login = login,
-                Password = password
-            };
-            response = await customAuthentication.TryLoginAsync(userRequest);
+        protected override Task OnInitializedAsync()
+        {
+            loginUserRequest = new LoginUserRequest();
+            return base.OnInitializedAsync();
+        }
+
+        private async Task LogUsername()
+        {                   
+            response = await customAuthentication.TryLoginAsync(loginUserRequest);
             if (response.ResultType == ResultType.Ok)
             {
                 NavigationManager.NavigateTo("/");

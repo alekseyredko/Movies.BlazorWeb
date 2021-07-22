@@ -1,54 +1,19 @@
 ﻿@page "/register"
 
-@inject ICustomAuthentication _authentication;
-@inject NavigationManager _navigationManager;
-
 <h3>Register</h3>
 
-<h6>Login</h6>
-<input type="text" @bind-value="login" />
-<h6>Name</h6>
-<input type="text" @bind-value="name" />
-<h6>Password</h6>
-<input type="password" @bind-value="password" />
-<button @onclick="TryRegisterAsync">Register</button>
+<form >
+    <SpecificErrorResult Key="Login" Result="result" />
+    <input type="text" @bind-value="registerUserRequest.Login" />
 
-@if (result != null)
-{
-    @if (result.ResultType != ResultType.Ok)
-    {
-        <ErrorResult Result="result" />
-    }
-}
+    <SpecificErrorResult Key="Name" Result="result" />
+    <input type="text" @bind-value="registerUserRequest.Name" />
 
-@code{
-    private string login { get; set; }
-    private string name { get; set; }
-    private string password { get; set; }
+    <SpecificErrorResult Key="Password" Result="result" />
+    <input type="password" @bind-value="registerUserRequest.Password" />
 
-    private Result<RegisterUserResponse> result;
+    <button @onclick="TryRegisterAsync">Register</button>
+</form>
 
-    private async Task TryRegisterAsync()
-    {
-        var user = new RegisterUserRequest
-        {
-            Login = login,
-            Name = name,
-            Password = password
-        };
 
-        result = await _authentication.TryRegisterAsync(user);
-        
-        if (result.ResultType == ResultType.Ok)
-        {
-            var loginRequest = new LoginUserRequest
-            {
-                Login = login,
-                Password = password
-            };
 
-            await _authentication.TryLoginAsync(loginRequest);
-            _navigationManager.NavigateTo("/");
-        }
-    }
-}

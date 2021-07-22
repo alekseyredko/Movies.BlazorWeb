@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Movies.Data.Results;
 using Movies.Data.Services.Interfaces;
 using Movies.Infrastructure.Models.Producer;
+using Movies.Infrastructure.Models.Reviewer;
 using Movies.Infrastructure.Models.User;
 using Movies.Infrastructure.Services.Interfaces;
 using System;
@@ -26,28 +27,26 @@ namespace Movies.BlazorWeb.Pages.Account
         [Inject]
         private NavigationManager NavigationManager { get; set; }
 
+        private ProducerRequest registerProducerRequest { get; set; }
+        private RegisterReviewerRequest registerReviewerRequest { get; set; }
 
-        private string country { get; set; }
         private Result<GetUserResponse> user { get; set; }
-        private Result<ProducerResponse> producer { get; set; }
+        private Result<ProducerResponse> registerProducerResult { get; set; }
+        private Result<RegisterReviewerResponse> registerReviewerResult { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-
             user = await _authentication.GetCurrentUserDataAsync();
 
+            registerProducerRequest = new ProducerRequest();
+            registerReviewerRequest = new RegisterReviewerRequest();
         }
 
         private async Task RegisterAsProducer()
-        {
-            var producerRequest = new ProducerRequest
-            {
-                Country = country
-            };
+        {           
+            registerProducerResult = await _authentication.TryRegisterAsProducerAsync(registerProducerRequest);
 
-            producer = await _authentication.TryRegisterAsProducerAsync(producerRequest);
-
-            if (producer.ResultType == ResultType.Ok)
+            if (registerProducerResult.ResultType == ResultType.Ok)
             {
                 NavigationManager.NavigateTo("/");
             }
