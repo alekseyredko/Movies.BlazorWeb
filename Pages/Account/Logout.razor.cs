@@ -9,9 +9,9 @@ namespace Movies.BlazorWeb.Pages.Account
     {
         protected override async Task OnInitializedAsync()
         {
-            await _customAuthentication.LogoutAsync();
+            await customAuthentication.LogoutAsync();
 
-            _navigationManager.NavigateTo("/");
+            navigationManager.NavigateTo("/");
         }
     }
 }

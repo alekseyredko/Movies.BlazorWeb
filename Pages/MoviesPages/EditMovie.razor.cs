@@ -18,16 +18,16 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
     public partial class EditMovie
     {
         [Inject]
-        private IMovieService _movieService { get; set; }
+        private IMovieService movieService { get; set; }
 
         [Inject]
-        private ICustomAuthentication _customAuthentication { get; set; }
+        private ICustomAuthentication customAuthentication { get; set; }
 
         [Inject]
-        private IMapper _mapper { get; set; }
+        private IMapper mapper { get; set; }
 
         [Inject]
-        private NavigationManager _navigationManager { get; set; }
+        private NavigationManager navigationManager { get; set; }
 
         [Parameter]
         public int Id { get; set; }
@@ -36,7 +36,7 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
 
         private string duration;
 
-        private Result<GetUserResponse> _currentUser;
+        private Result<GetUserResponse> currentUser;
 
         private Result<MovieResponse> result;
 
@@ -44,10 +44,10 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
 
         protected override async Task OnParametersSetAsync()
         {
-            var movie = await _movieService.GetMovieAsync(Id);
+            var movie = await movieService.GetMovieAsync(Id);
 
-            result = _mapper.Map<Result<Movie>, Result<MovieResponse>>(movie);
-            _currentUser = await _customAuthentication.GetCurrentUserDataAsync();
+            result = mapper.Map<Result<Movie>, Result<MovieResponse>>(movie);
+            currentUser = await customAuthentication.GetCurrentUserDataAsync();
 
             if (result.ResultType == ResultType.Ok)
             {
@@ -66,16 +66,16 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
                 {
                     MovieName = movieName,
                     Duration = timeSpan,
-                    ProducerId = _currentUser.Value.UserId
+                    ProducerId = currentUser.Value.UserId
                 };
 
-                var response = await _movieService.UpdateMovieAsync(_currentUser.Value.UserId, Id, request);
+                var response = await movieService.UpdateMovieAsync(currentUser.Value.UserId, Id, request);
 
-                updateResult = _mapper.Map<Result<Movie>, Result<MovieResponse>>(response);
+                updateResult = mapper.Map<Result<Movie>, Result<MovieResponse>>(response);
 
                 if (updateResult.ResultType == ResultType.Ok)
                 {
-                    _navigationManager.NavigateTo($"movies/{updateResult.Value.MovieId}");
+                    navigationManager.NavigateTo($"movies/{updateResult.Value.MovieId}");
                 }
             }
 

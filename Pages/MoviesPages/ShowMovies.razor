@@ -2,13 +2,13 @@
 
 <h1>Movies</h1>
 
-@if (_movies == null)
+@if (movies == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    @if (_movies.ResultType == ResultType.Ok)
+    @if (movies.ResultType == ResultType.Ok)
     {
         <AuthorizeView Roles="Producer">
             <Authorized>
@@ -25,7 +25,7 @@ else
 
             </thead>
             <tbody>
-                @foreach (var movie in _moviesToShow)
+                @foreach (var movie in moviesToShow)
                 {
                     var link = $"/movies/{movie.MovieId}";                    
                     <tr>
@@ -37,7 +37,7 @@ else
                         <td><p>Duration: @movie.Duration</p></td>
                         <td><p>Rate: @movie.Rate</p></td>                        
                         <td>
-                            @if (_canShowEdit && _currentUser.Value.UserId == movie.ProducerId)
+                            @if (canShowEdit && currentUser.Value.UserId == movie.ProducerId)
                             {
                                 var editLink = $"{link}/edit";
                                 <NavLink class="nav" href="@editLink">Edit</NavLink>
@@ -50,6 +50,6 @@ else
     }
     else
     {
-        <ErrorResult Result=@_movies/>
+        <ErrorResult Result=@movies/>
     }
 }

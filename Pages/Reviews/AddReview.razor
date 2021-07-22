@@ -1,0 +1,14 @@
+﻿<h3>Add Review</h3>
+
+<form>
+    <SpecificErrorResult Key="MovieId" Result="result" />
+
+    <SpecificErrorResult Key="ReviewText" FieldName="Text" Result="result" />
+    <input type="text" @bind-value="reviewRequest.ReviewText" />
+
+    <SpecificErrorResult Key="Rate" Result="result" />
+    <input type="number" min="1" max="10" @bind-value="reviewRequest.Rate" />
+
+    <button @onclick="AddReviewAsync">Add</button>
+
+</form>

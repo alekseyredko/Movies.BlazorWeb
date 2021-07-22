@@ -14,28 +14,28 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
     public partial class ShowMovie
     {
         [Inject]
-        private IMovieService _movieService { get; set; }
+        private IMovieService movieService { get; set; }
         
         [Inject]
-        private IReviewService _reviewService { get; set; }
+        private IReviewService reviewService { get; set; }
         
         [Inject]
-        private ICustomAuthentication _customAuthentication { get; set; }
+        private ICustomAuthentication customAuthentication { get; set; }
 
 
         [Parameter]
         public int Id { get; set; }
 
 
-        private Result<GetUserResponse> _currentUser;
-        private Result<Movie> _movie;
+        private Result<GetUserResponse> currentUser;
+        private Result<Movie> movie;
         private string link;
 
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
-            _movie = await _movieService.GetMovieAsync(Id);
-            _currentUser = await _customAuthentication.GetCurrentUserDataAsync();
+            movie = await movieService.GetMovieAsync(Id);
+            currentUser = await customAuthentication.GetCurrentUserDataAsync();
 
             await base.OnInitializedAsync();
 

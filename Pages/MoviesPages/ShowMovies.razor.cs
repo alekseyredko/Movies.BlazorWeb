@@ -13,41 +13,41 @@ using System.Threading.Tasks;
 
 namespace Movies.BlazorWeb.Pages.MoviesPages
 {    
-    public partial class ShowMovies: ComponentBase
+    public partial class ShowMovies
     {
-        private Result<IEnumerable<Movie>> _movies;
-        private IEnumerable<Movie> _moviesToShow;
+        private Result<IEnumerable<Movie>> movies;
+        private IEnumerable<Movie> moviesToShow;
 
-        private Result<GetUserResponse> _currentUser;
+        private Result<GetUserResponse> currentUser;
         
-        private bool _canShowEdit;
+        private bool canShowEdit;
         
         private RenderFragment<Movie> renderFragment;
                 
 
         [Inject]
-        private ICustomAuthentication _customAuthentication { get; set; }
+        private ICustomAuthentication customAuthentication { get; set; }
 
         [Inject]
-        private IMovieService _movieService { get; set; }
+        private IMovieService movieService { get; set; }
 
         [Inject]
-        private NavigationManager _navigationManager { get; set; }        
+        private NavigationManager navigationManager { get; set; }        
 
         [Inject]
-        private IMapper _mapper { get; set; }
+        private IMapper mapper { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            _movies = await _movieService.GetAllMoviesAsync();
+            movies = await movieService.GetAllMoviesAsync();
 
-            _moviesToShow = _movies.Value;
+            moviesToShow = movies.Value;
 
-            _currentUser = await _customAuthentication.GetCurrentUserDataAsync();
+            currentUser = await customAuthentication.GetCurrentUserDataAsync();
             
-            if (_currentUser.ResultType == ResultType.Ok)
+            if (currentUser.ResultType == ResultType.Ok)
             {
-                _canShowEdit = _currentUser.Value.Roles.Contains(UserRoles.Producer);
+                canShowEdit = currentUser.Value.Roles.Contains(UserRoles.Producer);
             }
         }
       
@@ -55,11 +55,11 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
         {           
             if ((bool)e.Value)
             {
-                _moviesToShow = _movies.Value.Where(x => x.ProducerId == _currentUser.Value.UserId);
+                moviesToShow = movies.Value.Where(x => x.ProducerId == currentUser.Value.UserId);
             }
             else
             {
-                _moviesToShow = _movies.Value;
+                moviesToShow = movies.Value;
             }
         }
     }

@@ -13,13 +13,13 @@ namespace Movies.BlazorWeb.Pages.Account
     public partial class Register
     {
         [Inject]
-        private ICustomAuthentication _authentication { get; set; }
+        private ICustomAuthentication authentication { get; set; }
         
         [Inject]
-        private NavigationManager _navigationManager  { get; set; }
+        private NavigationManager navigationManager  { get; set; }
         
         [Inject]
-        private IMapper _mapper { get; set; }
+        private IMapper mapper { get; set; }
 
         private RegisterUserRequest registerUserRequest { get; set; }        
 
@@ -33,11 +33,11 @@ namespace Movies.BlazorWeb.Pages.Account
 
         private async Task TryRegisterAsync()
         {           
-            result = await _authentication.TryRegisterAsync(registerUserRequest);
+            result = await authentication.TryRegisterAsync(registerUserRequest);
 
             if (result.ResultType == ResultType.Ok)
             {                
-                _navigationManager.NavigateTo("/");
+                navigationManager.NavigateTo("/");
             }
         }
     }

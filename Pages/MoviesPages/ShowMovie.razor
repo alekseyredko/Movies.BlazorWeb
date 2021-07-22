@@ -1,21 +1,29 @@
 ﻿@page "/movies/{id:int}"
 
+@using Movies.BlazorWeb.Pages.Reviews
 
-
-@if (_movie == null || _currentUser == null)
+@if (movie == null || currentUser == null)
 {
     <h3>Loading</h3>
 }
 else
 {
-    @if (_movie.ResultType == ResultType.Ok)
+    @if (movie.ResultType == ResultType.Ok)
     {
-        <h1>@_movie.Value.MovieName</h1>
-        <h2>@_movie.Value.Rate</h2>
+        <h2>@movie.Value.MovieName</h2>
+        <h3>Rate: @movie.Value.Rate</h3>
+
+        <ShowReviews MovieId="Id"/>        
+
+        <AuthorizeView Roles="Reviewer">
+            <Authorized>
+                <AddReview/>                
+            </Authorized>
+        </AuthorizeView>
 
         <AuthorizeView Roles="Producer">
             <Authorized>
-                @if (_movie.Value.ProducerId == _currentUser.Value.UserId)
+                @if (movie.Value.ProducerId == currentUser.Value.UserId)
                 {
                     <NavLink class="nav-link" href="@link">Edit</NavLink>
                 }
@@ -28,6 +36,6 @@ else
     }
     else
     {
-        <ErrorResult Result=@_movie />
+        <ErrorResult Result=@movie />
     }
 }
