@@ -29,17 +29,26 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
 
         private Result<GetUserResponse> currentUser;
         private Result<Movie> movie;
-        private string link;
-
+        private string editLink;
+        private string addReviewLink;
 
         protected override async Task OnParametersSetAsync()
+        {            
+            editLink = $"/movies/{Id}/edit";
+            addReviewLink = $"/movies/{Id}/add-review";
+            await base.OnInitializedAsync();            
+        }
+
+        protected override async Task OnInitializedAsync()
         {
             movie = await movieService.GetMovieAsync(Id);
             currentUser = await customAuthentication.GetCurrentUserDataAsync();
-
             await base.OnInitializedAsync();
+        }
 
-            link = $"/movies/{Id}/edit";
+        protected override Task OnAfterRenderAsync(bool firstRender)
+        {
+            return base.OnAfterRenderAsync(firstRender);
         }
     }
 }

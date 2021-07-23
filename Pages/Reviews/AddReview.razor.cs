@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Movies.Data.Models;
 using Movies.Data.Results;
 using Movies.Data.Services.Interfaces;
@@ -30,26 +31,41 @@ namespace Movies.BlazorWeb.Pages.Reviews
         private IMapper mapper { get; set; }
 
         [Parameter]
-        public int MovieId { get; set; }      
-        
+        public int MovieId { get; set; }
+
+        [CascadingParameter]
+        private Task<AuthenticationState> authenticationStateTask { get; set; }
+
         private ReviewRequest reviewRequest { get; set; }        
         private Result<ReviewResponse> result { get; set; }
         private Result<GetUserResponse> currentUser { get; set; }
         
         protected override async Task OnParametersSetAsync()
-        {
-            reviewRequest = new ReviewRequest();
-
-            currentUser = await authentication.GetCurrentUserDataAsync();
-
+        {            
             await base.OnParametersSetAsync();
         }
+
+        protected override async Task OnInitializedAsync()
+        {
+            reviewRequest = new ReviewRequest();
+            currentUser = await authentication.GetCurrentUserDataAsync();
+
+            //var state = await authenticationStateTask;
+            //state.User.
+
+            await base.OnInitializedAsync();
+        }               
 
         private async Task AddReviewAsync()
         {
             var review = mapper.Map<Review>(reviewRequest);
             var getResponse  = await reviewService.AddReviewAsync(MovieId, currentUser.Value.UserId, review);
-            result = mapper.Map<Result<ReviewResponse>>(getResponse);            
+            result = mapper.Map<Result<ReviewResponse>>(getResponse);
+
+            if (result.ResultType == ResultType.Ok)
+            {
+                navigationManager.NavigateTo($"/movies/{MovieId}");
+            }
         }
     }
 }

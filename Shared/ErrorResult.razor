@@ -1,6 +1,10 @@
 ﻿
 <div>
-    @if (Result != null)
+    @if (Result == null)
+    {
+
+    }
+    else
     {
         <h2>@Result.Title</h2>
         if (Result.ResultType != ResultType.Ok)
@@ -29,8 +33,3 @@
         }
     }
 </div>
-
-@code {
-    [Parameter]
-    public Result Result { get; set; }
-}

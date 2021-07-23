@@ -28,6 +28,7 @@ else
                 @foreach (var review in reviews.Value)
                 {
                     var link = $"/reviews/{review.ReviewId}";
+                    var movieLink = $"/movies/{review.MovieId}";
                 <tr>
                     <td>
                         <NavLink class="nav" href="@link">
@@ -35,8 +36,8 @@ else
                         </NavLink>
                     </td>
                     <td>
-                        var movieLink = $"/movies/{review.MovieId}"
-                        <NavLink class="nav" href="movieLink">
+                        
+                        <NavLink class="nav" href="@movieLink">
                             Go to movie
                         </NavLink>
                     </td>

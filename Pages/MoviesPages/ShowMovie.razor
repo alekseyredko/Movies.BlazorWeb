@@ -13,11 +13,11 @@ else
         <h2>@movie.Value.MovieName</h2>
         <h3>Rate: @movie.Value.Rate</h3>
 
-        <ShowReviews MovieId="Id"/>        
+        <ShowReviews MovieId="Id" />
 
         <AuthorizeView Roles="Reviewer">
-            <Authorized>
-                <AddReview/>                
+            <Authorized>                
+                <NavLink class="nav-link" href="@addReviewLink">Add review</NavLink>
             </Authorized>
         </AuthorizeView>
 
@@ -25,7 +25,7 @@ else
             <Authorized>
                 @if (movie.Value.ProducerId == currentUser.Value.UserId)
                 {
-                    <NavLink class="nav-link" href="@link">Edit</NavLink>
+                    <NavLink class="nav-link" href="@editLink">Edit</NavLink>
                 }
             </Authorized>
             <NotAuthorized>
