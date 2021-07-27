@@ -1,9 +1,8 @@
 ﻿@page "/movies/{MovieId:int}/add-review"
-
 <h3>Add Review</h3>
 
-<form>    
-    <ErrorResult Result="result"/>
+<form>
+    <ErrorResult Result="result" />
 
     <SpecificErrorResult Key="ReviewText" FieldName="Text" Result="result" />
     <input type="text" @bind-value="reviewRequest.ReviewText" />

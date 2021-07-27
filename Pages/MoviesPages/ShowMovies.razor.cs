@@ -24,7 +24,6 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
         
         private RenderFragment<Movie> renderFragment;
                 
-
         [Inject]
         private ICustomAuthentication customAuthentication { get; set; }
 

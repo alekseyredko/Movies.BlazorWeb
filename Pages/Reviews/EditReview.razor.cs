@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.DependencyInjection;
 using Movies.Data.Models;
 using Movies.Data.Results;
 using Movies.Data.Services.Interfaces;
@@ -18,8 +17,8 @@ using System.Threading.Tasks;
 namespace Movies.BlazorWeb.Pages.Reviews
 {
     [Authorize(Roles = "Reviewer")]
-    public partial class AddReview
-    {        
+    public partial class EditReview
+    {
         [Inject]
         private NavigationManager navigationManager { get; set; }
 
@@ -33,42 +32,37 @@ namespace Movies.BlazorWeb.Pages.Reviews
         private IMapper mapper { get; set; }
 
         [Parameter]
-        public int MovieId { get; set; }
+        public int Id { get; set; }
 
         //[CascadingParameter]
         //private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-        private ReviewRequest reviewRequest { get; set; }        
+        private ReviewRequest reviewRequest { get; set; }
         private Result<ReviewResponse> result { get; set; }
         private Result<GetUserResponse> currentUser { get; set; }
-        
+
         private int userId { get; set; }
 
         protected override async Task OnParametersSetAsync()
-        {            
-            await base.OnParametersSetAsync();
-        }
-
-        protected override async Task OnInitializedAsync()
-        {            
+        {
             reviewRequest = new ReviewRequest();
             currentUser = await authentication.GetCurrentUserDataAsync();
 
-            //var state = await authenticationStateTask;
-            //userId = int.Parse(state.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var toEdit = await reviewService.GetReviewAsync(Id);
+            result = mapper.Map<Result<ReviewResponse>>(toEdit);
 
-            await base.OnInitializedAsync();
-        }               
+            await base.OnParametersSetAsync();
+        }
 
-        private async Task AddReviewAsync()
+        private async Task EditReviewAsync()
         {
             var review = mapper.Map<Review>(reviewRequest);
-            var getResponse  = await reviewService.AddReviewAsync(MovieId, currentUser.Value.UserId, review);
+            var getResponse = await reviewService.UpdateReviewAsync(Id, currentUser.Value.UserId, review);
             result = mapper.Map<Result<ReviewResponse>>(getResponse);
 
             if (result.ResultType == ResultType.Ok)
             {
-                navigationManager.NavigateTo($"/movies/{MovieId}");
+                navigationManager.NavigateTo($"/reviews/{Id}");
             }
         }
     }

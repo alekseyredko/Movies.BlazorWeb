@@ -1,0 +1,31 @@
+﻿@page "/reviews/{id:int}/edit"
+
+<h3>EditReview</h3>
+
+@if (result == null || currentUser == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    if (result.ResultType == ResultType.Ok)
+    {
+        <form>
+            <ErrorResult Result="result" />
+        
+            <SpecificErrorResult Key="ReviewText" FieldName="Text" Result="result" />
+            <input type="text" @bind-value="reviewRequest.ReviewText" />
+        
+            <SpecificErrorResult Key="Rate" Result="result" />
+            <input type="number" @bind-value="reviewRequest.Rate" />
+        
+            <button @onclick="EditReviewAsync">Edit</button>
+        
+        </form>
+
+    }
+    else
+    {
+        <ErrorResult Result="result" />
+    }
+}

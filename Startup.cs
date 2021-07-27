@@ -38,14 +38,14 @@ namespace Movies.BlazorWeb
 
             services.AddServerSideBlazor();
 
-            services.AddDataAccessServices();
+            services.AddDataAccessServicesForBlazor();
             services.RegisterValidatorsAsServices();
 
-            services.AddScoped<ServerAuthenticationStateProvider, UserAuthenticationStateProvider>();
-            services.AddScoped<AuthenticationStateProvider>(provider =>
+            services.AddTransient<ServerAuthenticationStateProvider, UserAuthenticationStateProvider>();
+            services.AddTransient<AuthenticationStateProvider>(provider =>
                 provider.GetRequiredService<ServerAuthenticationStateProvider>());
 
-            services.AddScoped<ICustomAuthentication, CustomAuthentication>();
+            services.AddTransient<ICustomAuthentication, CustomAuthentication>();
 
             services.AddAutomapperAndProfile();
         }

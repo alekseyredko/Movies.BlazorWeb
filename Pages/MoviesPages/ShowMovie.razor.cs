@@ -14,10 +14,7 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
     public partial class ShowMovie
     {
         [Inject]
-        private IMovieService movieService { get; set; }
-        
-        [Inject]
-        private IReviewService reviewService { get; set; }
+        private IMovieService movieService { get; set; }       
         
         [Inject]
         private ICustomAuthentication customAuthentication { get; set; }

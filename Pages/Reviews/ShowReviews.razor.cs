@@ -4,6 +4,7 @@ using Movies.Data.Models;
 using Movies.Data.Results;
 using Movies.Data.Services.Interfaces;
 using Movies.Infrastructure.Models.Review;
+using Movies.Infrastructure.Models.User;
 using Movies.Infrastructure.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace Movies.BlazorWeb.Pages.Reviews
         private IMapper mapper { get; set; }
 
         private Result<IEnumerable<ReviewResponse>> reviews { get; set; }
+        private Result<GetUserResponse> currentUser;
 
         [Parameter]
         public int? MovieId { get; set; }
@@ -58,6 +60,8 @@ namespace Movies.BlazorWeb.Pages.Reviews
 
 
             reviews = mapper.Map<Result<IEnumerable<ReviewResponse>>>(getReviews);
+
+            currentUser = await customAuthentication.GetCurrentUserDataAsync();
 
             await base.OnInitializedAsync();
         }

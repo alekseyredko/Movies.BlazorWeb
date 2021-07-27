@@ -43,13 +43,13 @@ else
                     </td>
                     <td><p>Text: @review.ReviewText</p></td>
                     <td><p>Rate: @review.Rate</p></td>
-                    @*<td>
-                        @if (_canShowEdit && currentUser.Value.UserId == movie.ProducerId)
+                    <td>
+                        @if (currentUser.Value.UserId == review.ReviewerId)
                         {
                             var editLink = $"{link}/edit";
                             <NavLink class="nav" href="@editLink">Edit</NavLink>
                         }
-                    </td>*@
+                    </td>
                 </tr>
                 }
             </tbody>
