@@ -12,5 +12,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Movies.Infrastructure\Movies.Infrastructure.csproj" />
   </ItemGroup>
-
 </Project>
