@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Movies.BlazorWeb.Shared.Entities
 {
-    public partial class MovieEntity : ComponentBase
+    public partial class MovieEntity: ComponentBase
     {        
         [Inject]
         NavigationManager navigationManager { get; set; }
