@@ -1,5 +1,7 @@
 ﻿@page "/movies/{id:int}"
 
+
+@using Movies.BlazorWeb.Shared.Entities
 @using Movies.BlazorWeb.Pages.Reviews
 
 @if (movie == null || currentUser == null)
@@ -9,10 +11,7 @@
 else
 {
     @if (movie.ResultType == ResultType.Ok)
-    {
-        <h2>@movie.Value.MovieName</h2>
-        <h3>Rate: @movie.Value.Rate</h3>
-
+    {        
         <ShowReviews MovieId="Id" />
 
         <AuthorizeView Roles="Reviewer">

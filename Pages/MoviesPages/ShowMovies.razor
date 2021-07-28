@@ -1,5 +1,8 @@
 ﻿@page "/movies"
 
+@using Movies.BlazorWeb.Shared.TableTemplate
+@using Movies.BlazorWeb.Shared.Entities
+
 <h1>Movies</h1>
 
 @if (movies == null)
@@ -23,52 +26,14 @@ else
             </Authorized>
         </AuthorizeView>
 
-        <table class="table">
-            <thead>
-
-            </thead>
-            <tbody>
-                @foreach (var movie in moviesToShow)
-                {
-                    var link = $"/movies/{movie.MovieId}";
-                    <tr>
-                        <td>
-                            <NavLink class="nav" href="@link">
-                                @movie.MovieName
-                            </NavLink>
-                        </td>
-                        <td><p>Duration: @movie.Duration</p></td>
-                        <td><p>Rate: @movie.Rate</p></td>
-                        <td>
-                            @if (canShowEdit && currentUser.Value.UserId == movie.ProducerId)
-                            {
-                                var editLink = $"{link}/edit";
-                                <NavLink class="nav" href="@editLink">Edit</NavLink>
-                            }
-                        </td>
-                        <td>
-                            @if (canShowEdit && currentUser.Value.UserId == movie.ProducerId)
-                            {
-                                <button class="btn-danger" @onclick="() => ShowDeleteDialog(movie.MovieId)">Delete</button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
+        <TableTemplate TItem="MovieResponse" Items="movies" Context="MovieResponse">
+            <RowTemplate>
+                <MovieEntity Movie="@MovieResponse" OnMovieDeleted="OnMovieDeletedAsync"/>
+            </RowTemplate>
+        </TableTemplate>
     }
     else
     {
         <ErrorResult Result=@movies />
-    }
-
-    @if (deleteDialogOpen)
-    {
-        <ConfirmDialog Title="Are you sure?"
-                     Text="Do you want to delete this entry?"
-                     OnClose="@OnDeleteAsync"
-                     DialogType="ConfirmDialog.ModalDialogType.DeleteCancel">
-        </ConfirmDialog>
     }
 }
