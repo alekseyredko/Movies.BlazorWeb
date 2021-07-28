@@ -14,6 +14,9 @@ namespace Movies.BlazorWeb.Shared.Entities
 {
     public partial class MovieEntity : ComponentBase
     {        
+        [Inject]
+        NavigationManager navigationManager { get; set; }
+
         [Parameter]
         public EventCallback<int> OnMovieDeleted { get; set; }
 
@@ -55,6 +58,11 @@ namespace Movies.BlazorWeb.Shared.Entities
         {            
             deleteDialogOpen = true;
             this.StateHasChanged();
+        }
+
+        private void GoToEditMovie()
+        {
+            navigationManager.NavigateTo($"/movies/{Movie.MovieId}");
         }
 
         private async Task OnDeleteAsync(bool confirm)

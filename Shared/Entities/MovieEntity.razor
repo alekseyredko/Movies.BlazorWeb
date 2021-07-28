@@ -1,8 +1,5 @@
-﻿<td>
-    @Movie.MovieName
-    @*<NavLink class="nav" href="@link">
-            @MovieResponse.MovieName
-        </NavLink>*@
+﻿<td>    
+    <button class="btn btn-link" @onclick="GoToEditMovie">@Movie.MovieName</button>
 </td>
 <td>
     <p>Duration: @Movie.Duration</p>
@@ -13,13 +10,13 @@
 <td>
     @if (canEditAndDelete)
     {
-        <button class="btn-primary btn-warning" @onclick="() => ShowDeleteDialog()">Update</button>
+        <button class="btn btn-warning" @onclick="GoToEditMovie">Update</button>
     }
 </td>
 <td>
     @if (canEditAndDelete)
     {
-        <button class="btn-secondary btn-danger" @onclick="() => ShowDeleteDialog()">Delete</button>
+        <button class="btn btn-danger" @onclick="ShowDeleteDialog">Delete</button>
     }
 </td>
 
