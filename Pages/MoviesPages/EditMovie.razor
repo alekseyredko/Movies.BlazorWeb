@@ -9,16 +9,14 @@
 else
 {
     if (result.ResultType == ResultType.Ok)
-    {
-        <p>Movie name:</p>
-        <SpecificErrorResult Result="updateResult" Key="MovieName" />
+    {       
+        <SpecificErrorResult Result="updateResult" FieldName="Movie Name" Key="MovieName" />
         <input type="text" @bind="@movieName" />
-
-        <p>Duration:</p>
+        
+        <SpecificErrorResult Result="updateResult" FieldName="Duration" Key="Duration" />
         <input type="text" @bind="@duration" />
 
         <button @onclick="UpdateMovieAsync">Submit</button>
-                
     }
     else
     {

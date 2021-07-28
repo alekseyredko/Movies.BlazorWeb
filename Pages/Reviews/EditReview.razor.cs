@@ -37,33 +37,39 @@ namespace Movies.BlazorWeb.Pages.Reviews
         //[CascadingParameter]
         //private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-        private ReviewRequest reviewRequest { get; set; }
+        private UpdateReviewRequest reviewRequest { get; set; }
         private Result<ReviewResponse> result { get; set; }
-        private Result<GetUserResponse> currentUser { get; set; }
-
-        private int userId { get; set; }
+        private Result<ReviewResponse> updateResult { get; set; }
+        private Result<GetUserResponse> currentUser { get; set; }        
 
         protected override async Task OnParametersSetAsync()
-        {
-            reviewRequest = new ReviewRequest();
+        {            
             currentUser = await authentication.GetCurrentUserDataAsync();
 
             var toEdit = await reviewService.GetReviewAsync(Id);
             result = mapper.Map<Result<ReviewResponse>>(toEdit);
 
+            reviewRequest = mapper.Map<Result<Review>, UpdateReviewRequest>(toEdit);
+
             await base.OnParametersSetAsync();
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+
+            await base.OnInitializedAsync();
         }
 
         private async Task EditReviewAsync()
         {
             var review = mapper.Map<Review>(reviewRequest);
             var getResponse = await reviewService.UpdateReviewAsync(Id, currentUser.Value.UserId, review);
-            result = mapper.Map<Result<ReviewResponse>>(getResponse);
+            updateResult = mapper.Map<Result<ReviewResponse>>(getResponse);
 
-            if (result.ResultType == ResultType.Ok)
+            if (updateResult.ResultType == ResultType.Ok)
             {
-                navigationManager.NavigateTo($"/reviews/{Id}");
-            }
+                navigationManager.NavigateTo($"/movies/{getResponse.Value.MovieId}");
+            }            
         }
     }
 }
