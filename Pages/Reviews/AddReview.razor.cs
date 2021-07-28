@@ -38,9 +38,7 @@ namespace Movies.BlazorWeb.Pages.Reviews
         private ReviewRequest reviewRequest { get; set; }        
         private Result<ReviewResponse> result { get; set; }
         private Result<GetUserResponse> currentUser { get; set; }
-        
-        private int userId { get; set; }
-
+             
         protected override async Task OnParametersSetAsync()
         {            
             await base.OnParametersSetAsync();
