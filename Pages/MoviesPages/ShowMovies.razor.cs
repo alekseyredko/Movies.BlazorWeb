@@ -19,28 +19,24 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
         private IEnumerable<Movie> moviesToShow;
 
         private Result<GetUserResponse> currentUser;
-        
-        private bool canShowEdit;
-        
-        private RenderFragment<Movie> renderFragment;
-                
+                                       
         [Inject]
         private ICustomAuthentication customAuthentication { get; set; }
 
         [Inject]
         private IMovieService movieService { get; set; }
 
-        [Inject]
-        private NavigationManager navigationManager { get; set; }        
+        private bool showOnlyMyMovies { get; set; }
 
-        [Inject]
-        private IMapper mapper { get; set; }
+        private bool deleteDialogOpen { get; set; }
+
+        private int movieIdToDelete { get; set; }
+
+        private bool canShowEdit { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            movies = await movieService.GetAllMoviesAsync();
-
-            moviesToShow = movies.Value;
+            await LoadMoviesAsync(true, false);
 
             currentUser = await customAuthentication.GetCurrentUserDataAsync();
             
@@ -50,9 +46,14 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
             }
         }
       
-        private async Task ChangeMovieShowAsync(ChangeEventArgs e)
-        {           
-            if ((bool)e.Value)
+        private async Task LoadMoviesAsync(bool shouldLoad, bool showOnlyMyMovies)
+        {
+            if (shouldLoad)
+            {
+                movies = await movieService.GetAllMoviesAsync();
+            }
+
+            if (showOnlyMyMovies)
             {
                 moviesToShow = movies.Value.Where(x => x.ProducerId == currentUser.Value.UserId);
             }
@@ -60,6 +61,35 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
             {
                 moviesToShow = movies.Value;
             }
+        }
+
+        private async Task OnShowInlyMyMoviesAsync(ChangeEventArgs e)
+        {
+            showOnlyMyMovies = (bool)e.Value;
+            await LoadMoviesAsync(false, showOnlyMyMovies);
+        }
+
+        private void ShowDeleteDialog(int movieId)
+        {
+            movieIdToDelete = movieId;
+            deleteDialogOpen = true;
+            this.StateHasChanged();
+        }
+
+        private async Task OnDeleteAsync(bool confirm)
+        {
+            if (confirm)
+            {
+                var response = await movieService.DeleteMovieAsync(currentUser.Value.UserId, movieIdToDelete);
+
+                if (response.ResultType == ResultType.Ok)
+                {
+                    await LoadMoviesAsync(true, showOnlyMyMovies);
+                }
+
+                this.StateHasChanged();
+            }
+            deleteDialogOpen = false;
         }
     }
 }

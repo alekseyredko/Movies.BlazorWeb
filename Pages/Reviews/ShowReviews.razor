@@ -36,7 +36,7 @@ else
                         </NavLink>
                     </td>
                     <td>
-                        
+
                         <NavLink class="nav" href="@movieLink">
                             Go to movie
                         </NavLink>
@@ -48,6 +48,13 @@ else
                         {
                             var editLink = $"{link}/edit";
                             <NavLink class="nav" href="@editLink">Edit</NavLink>
+                        }
+                    </td>
+                    <td>
+                        @if (currentUser.Value.UserId == review.ReviewerId)
+                        {
+                            var deleteLink = $"{link}/delete";
+                            <NavLink class="nav" href="@deleteLink">Delete</NavLink>
                         }
                     </td>
                 </tr>
