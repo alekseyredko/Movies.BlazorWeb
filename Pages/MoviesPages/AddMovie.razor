@@ -6,10 +6,10 @@
     <ErrorResult Result="addResult"/>
     <p>Movie name:</p>
     <SpecificErrorResult Result="addResult" Key="MovieName" />
-    <input type="text" @bind="@movieRequest.MovieName" />
+    <input class="input-group-text" type="text" @bind="@movieRequest.MovieName" />
 
     <p>Duration:</p>
-    <input type="text" @bind="@movieRequest.Duration" />
+    <input class="input-group-text" type="text" @bind="@movieRequest.Duration" />
 
-    <button @onclick="AddMovieAsync">Submit</button>
+    <button class="btn btn-success" @onclick="AddMovieAsync">Submit</button>
 </form>
