@@ -1,0 +1,13 @@
+﻿@using Movies.Infrastructure.Models.Review
+
+
+<td>
+    <NavLink class="nav-justified">@Review.ReviewText</NavLink>
+</td>
+<td>
+    <p>Rate: @Review.Rate</p>
+</td>
+<Entity Value="Review" T="ReviewResponse" 
+        OnEdit="OnUpdateAsync" 
+        OnDelete="OnDeleteAsync"
+        CanEditAndDelete="canEditAndDelete"/>

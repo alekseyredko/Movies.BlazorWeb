@@ -1,5 +1,7 @@
 ﻿@page "/reviews/"
 
+@using Movies.BlazorWeb.Shared.Entities
+
 <h1>Reviews</h1>
 
 @if (reviews == null)
@@ -11,14 +13,20 @@ else
     @if (reviews.ResultType == ResultType.Ok)
     {
         @*<AuthorizeView Roles="Reviewer">
-            <Authorized>
-                <div>
-                    <input type="checkbox" name="my-reviews"
-                           @onchange="ChangeReviewsShowAsync" />
-                    <label for="my-reviews">Only my reviews</label>
-                </div>
-            </Authorized>
-        </AuthorizeView>*@
+                <Authorized>
+                    <div>
+                        <input type="checkbox" name="my-reviews"
+                               @onchange="ChangeReviewsShowAsync" />
+                        <label for="my-reviews">Only my reviews</label>
+                    </div>
+                </Authorized>
+            </AuthorizeView>*@
+
+        <TableTemplate Items="reviews" Context="ReviewResponse">
+            <RowTemplate>
+                <ReviewEntity Review="ReviewResponse" OnEdit="OnUpdate" OnDelete="OnDelete"/>
+            </RowTemplate>
+        </TableTemplate>
 
         <table class="table">
             <thead>
@@ -29,35 +37,35 @@ else
                 {
                     var link = $"/reviews/{review.ReviewId}";
                     var movieLink = $"/movies/{review.MovieId}";
-                <tr>
-                    <td>
-                        <NavLink class="nav" href="@link">
-                            Show full review
-                        </NavLink>
-                    </td>
-                    <td>
+                    <tr>
+                        <td>
+                            <NavLink class="nav" href="@link">
+                                Show full review
+                            </NavLink>
+                        </td>
+                        <td>
 
-                        <NavLink class="nav" href="@movieLink">
-                            Go to movie
-                        </NavLink>
-                    </td>
-                    <td><p>Text: @review.ReviewText</p></td>
-                    <td><p>Rate: @review.Rate</p></td>
-                    <td>
-                        @if (currentUser.Value.UserId == review.ReviewerId)
-                        {
-                            var editLink = $"{link}/edit";
-                            <NavLink class="nav" href="@editLink">Edit</NavLink>
-                        }
-                    </td>
-                    <td>
-                        @if (currentUser.Value.UserId == review.ReviewerId)
-                        {
-                            var deleteLink = $"{link}/delete";
-                            <NavLink class="nav" href="@deleteLink">Delete</NavLink>
-                        }
-                    </td>
-                </tr>
+                            <NavLink class="nav" href="@movieLink">
+                                Go to movie
+                            </NavLink>
+                        </td>
+                        <td><p>Text: @review.ReviewText</p></td>
+                        <td><p>Rate: @review.Rate</p></td>
+                        <td>
+                            @if (currentUser.Value.UserId == review.ReviewerId)
+                            {
+                                var editLink = $"{link}/edit";
+                                <NavLink class="nav" href="@editLink">Edit</NavLink>
+                            }
+                        </td>
+                        <td>
+                            @if (currentUser.Value.UserId == review.ReviewerId)
+                            {
+                                var deleteLink = $"{link}/delete";
+                                <NavLink class="nav" href="@deleteLink">Delete</NavLink>
+                            }
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>

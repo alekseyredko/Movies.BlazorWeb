@@ -28,42 +28,44 @@ namespace Movies.BlazorWeb.Pages.Reviews
         private IMapper mapper { get; set; }
 
         private Result<IEnumerable<ReviewResponse>> reviews { get; set; }
-        private Result<GetUserResponse> currentUser;
-
-        [Parameter]
-        public int? MovieId { get; set; }
-
-        [Parameter]
-        public int? ReviewerId { get; set; }
+        private Result<GetUserResponse> currentUser { get; set; }
+      
 
         protected override async Task OnParametersSetAsync()
-        {            
-            var getReviews = new Result<IEnumerable<Review>>();
+        {
+            await LoadReviewsAsync(false);
 
-            if (MovieId.HasValue && ReviewerId.HasValue)
+            currentUser = await customAuthentication.GetCurrentUserDataAsync();
+
+            await base.OnInitializedAsync();
+        }
+
+        private async Task LoadReviewsAsync(bool showOnlyMyReviews)
+        {
+            var getReviews = new Result<IEnumerable<Review>>();            
+            if (showOnlyMyReviews)
             {
-                getReviews = await reviewService.GetMovieReviewsAsync(MovieId.Value);
-                getReviews.Value = getReviews.Value.Where(x => x.ReviewerId == ReviewerId);
-            }
-            else if (MovieId.HasValue)
-            {
-                getReviews = await reviewService.GetMovieReviewsAsync(MovieId.Value);
-            }
-            else if (ReviewerId.HasValue)
-            {
-                getReviews = await reviewService.GetReviewerReviewsAsync(ReviewerId.Value);
+                getReviews = await reviewService.GetAllReviewsAsync();
             }
             else
             {
                 getReviews = await reviewService.GetAllReviewsAsync();
             }
+            reviews = mapper.Map<Result<IEnumerable<Review>>, Result<IEnumerable<ReviewResponse>>>(getReviews);
+        }
 
+        private async Task OnDelete(ReviewResponse response)
+        {
+            var result = await reviewService.DeleteReviewAsync(currentUser.Value.UserId, response.ReviewId);
+            if (result.ResultType == ResultType.Ok)
+            {
+                await LoadReviewsAsync(false);
+            }
+        }
 
-            reviews = mapper.Map<Result<IEnumerable<ReviewResponse>>>(getReviews);
-
-            currentUser = await customAuthentication.GetCurrentUserDataAsync();
-
-            await base.OnInitializedAsync();
+        private async Task OnUpdate(ReviewResponse response)
+        {
+            
         }
     }
 }
