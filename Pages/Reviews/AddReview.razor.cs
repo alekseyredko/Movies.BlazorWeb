@@ -33,10 +33,7 @@ namespace Movies.BlazorWeb.Pages.Reviews
         private IMapper mapper { get; set; }
 
         [Parameter]
-        public int MovieId { get; set; }
-
-        //[CascadingParameter]
-        //private Task<AuthenticationState> authenticationStateTask { get; set; }
+        public int MovieId { get; set; }      
 
         private ReviewRequest reviewRequest { get; set; }        
         private Result<ReviewResponse> result { get; set; }
@@ -53,9 +50,6 @@ namespace Movies.BlazorWeb.Pages.Reviews
         {            
             reviewRequest = new ReviewRequest();
             currentUser = await authentication.GetCurrentUserDataAsync();
-
-            //var state = await authenticationStateTask;
-            //userId = int.Parse(state.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
             await base.OnInitializedAsync();
         }               
