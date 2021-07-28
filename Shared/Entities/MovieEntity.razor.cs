@@ -32,6 +32,8 @@ namespace Movies.BlazorWeb.Shared.Entities
 
         private int userId { get; set; }
 
+        private string movieLink { get; set; }
+
         protected override async Task OnParametersSetAsync()
         {
             var state = await authenticationStateTask;
@@ -51,6 +53,8 @@ namespace Movies.BlazorWeb.Shared.Entities
                 }   
             }
 
+            movieLink = $"/movies/{Movie.MovieId}";
+
             await base.OnParametersSetAsync();
         }
 
@@ -62,7 +66,7 @@ namespace Movies.BlazorWeb.Shared.Entities
 
         private void GoToEditMovie()
         {
-            navigationManager.NavigateTo($"/movies/{Movie.MovieId}");
+            navigationManager.NavigateTo($"/movies/{Movie.MovieId}/edit");
         }
 
         private async Task OnDeleteAsync(bool confirm)
