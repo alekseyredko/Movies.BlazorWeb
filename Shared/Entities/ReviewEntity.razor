@@ -7,7 +7,22 @@
 <td>
     <p>Rate: @Review.Rate</p>
 </td>
-<Entity Value="Review" T="ReviewResponse" 
-        OnEdit="OnUpdateAsync" 
-        OnDelete="OnDeleteAsync"
-        CanEditAndDelete="canEditAndDelete"/>
+
+<td>
+    @if (canEditAndDelete)
+    {
+        <button class="btn btn-warning" @onclick="GoToEditReview">Update</button>
+    }
+</td>
+<td>
+    @if (canEditAndDelete)
+    {
+        <button class="btn btn-danger" @onclick="ShowDeleteDialog">Delete</button>
+    }
+</td>
+
+
+@if (DynamicRender != null && confirmActionDialogOpen)
+{
+    @DynamicRender
+}

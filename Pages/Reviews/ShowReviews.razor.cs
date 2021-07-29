@@ -19,17 +19,21 @@ namespace Movies.BlazorWeb.Pages.Reviews
         private IReviewService reviewService { get; set; }
 
         [Inject]
-        private ICustomAuthentication customAuthentication { get; set; }
-
-        [Inject]
-        private IMovieService movieService { get; set; }
+        private ICustomAuthentication customAuthentication { get; set; }        
 
         [Inject]
         private IMapper mapper { get; set; }
 
+        [Inject]
+        private NavigationManager navigationManager { get; set; }
+
+        [Parameter]
+        public int? MovieId { get; set; }
+
         private Result<IEnumerable<ReviewResponse>> reviews { get; set; }
         private Result<GetUserResponse> currentUser { get; set; }
-      
+        private bool showOnlyMyReviews { get; set; }
+
 
         protected override async Task OnParametersSetAsync()
         {
@@ -42,30 +46,40 @@ namespace Movies.BlazorWeb.Pages.Reviews
 
         private async Task LoadReviewsAsync(bool showOnlyMyReviews)
         {
-            var getReviews = new Result<IEnumerable<Review>>();            
-            if (showOnlyMyReviews)
+            var getReviews = new Result<IEnumerable<Review>>();
+
+            if (MovieId.HasValue)
             {
-                getReviews = await reviewService.GetAllReviewsAsync();
+                getReviews = await reviewService.GetMovieReviewsAsync(MovieId.Value);
+                if (showOnlyMyReviews && getReviews.ResultType == ResultType.Ok)
+                {
+                    getReviews.Value = getReviews.Value.Where(x => x.ReviewerId == currentUser.Value.UserId);
+                }
             }
             else
             {
-                getReviews = await reviewService.GetAllReviewsAsync();
-            }
+                if (showOnlyMyReviews)
+                {
+                    getReviews = await reviewService.GetReviewerReviewsAsync(currentUser.Value.UserId);
+                }
+                else
+                {
+                    getReviews = await reviewService.GetAllReviewsAsync();
+                }
+            }            
+
             reviews = mapper.Map<Result<IEnumerable<Review>>, Result<IEnumerable<ReviewResponse>>>(getReviews);
         }
 
-        private async Task OnDelete(ReviewResponse response)
+        private async Task OnShowOnlyMyReviewsAsync(ChangeEventArgs e)
         {
-            var result = await reviewService.DeleteReviewAsync(currentUser.Value.UserId, response.ReviewId);
-            if (result.ResultType == ResultType.Ok)
-            {
-                await LoadReviewsAsync(false);
-            }
+            showOnlyMyReviews = (bool)e.Value;
+            await LoadReviewsAsync(showOnlyMyReviews);
         }
 
-        private async Task OnUpdate(ReviewResponse response)
+        private async Task OnReviewDeletedAsync(ReviewResponse review)
         {
-            
+            await LoadReviewsAsync(showOnlyMyReviews);
         }
     }
 }

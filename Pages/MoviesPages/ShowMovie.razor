@@ -11,27 +11,16 @@
 else
 {
     @if (movie.ResultType == ResultType.Ok)
-    {        
+    { 
+        <MovieEntity Movie="movie.Value"/>
+
         <ShowReviews MovieId="Id" />
 
         <AuthorizeView Roles="Reviewer">
             <Authorized>                
                 <NavLink class="nav-link" href="@addReviewLink">Add review</NavLink>
             </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Roles="Producer">
-            <Authorized>
-                @if (movie.Value.ProducerId == currentUser.Value.UserId)
-                {
-                    <NavLink class="nav-link" href="@editLink">Edit</NavLink>
-                }
-            </Authorized>
-            <NotAuthorized>
-                <p>Not authorized to edit</p>
-            </NotAuthorized>
-        </AuthorizeView>
-
+        </AuthorizeView>        
     }
     else
     {

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Components;
 using Movies.Data.Models;
 using Movies.Data.Results;
 using Movies.Data.Services.Interfaces;
+using Movies.Infrastructure.Models.Movie;
 using Movies.Infrastructure.Models.User;
 using Movies.Infrastructure.Services.Interfaces;
 using System;
@@ -19,26 +21,29 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
         [Inject]
         private ICustomAuthentication customAuthentication { get; set; }
 
+        [Inject]
+        private IMapper mapper { get; set; }
 
         [Parameter]
         public int Id { get; set; }
 
 
         private Result<GetUserResponse> currentUser;
-        private Result<Movie> movie;
-        private string editLink;
+        private Result<MovieResponse> movie;      
         private string addReviewLink;
 
         protected override async Task OnParametersSetAsync()
-        {            
-            editLink = $"/movies/{Id}/edit";
+        {                        
             addReviewLink = $"/movies/{Id}/add-review";
             await base.OnInitializedAsync();            
         }
 
         protected override async Task OnInitializedAsync()
         {
-            movie = await movieService.GetMovieAsync(Id);
+            var getMovie = await movieService.GetMovieAsync(Id);
+
+            movie = mapper.Map<Result<MovieResponse>>(getMovie);
+
             currentUser = await customAuthentication.GetCurrentUserDataAsync();
             await base.OnInitializedAsync();
         }

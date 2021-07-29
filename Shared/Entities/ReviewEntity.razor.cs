@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Movies.Data.Models;
+using Movies.Data.Results;
+using Movies.Data.Services.Interfaces;
 using Movies.Infrastructure.Models.Review;
 using System;
 using System.Collections.Generic;
@@ -12,21 +14,29 @@ namespace Movies.BlazorWeb.Shared.Entities
 {
     public partial class ReviewEntity
     {
-        [Parameter]
-        public EventCallback<ReviewResponse> OnDelete { get; set; }
+        [Inject]
+        private IReviewService reviewService { get; set; }
+
+        [Inject]
+        NavigationManager navigationManager { get; set; }
 
         [Parameter]
-        public EventCallback<ReviewResponse> OnEdit { get; set; }
+        public EventCallback<ReviewResponse> OnActionDoneAsync { get; set; }
 
         [Parameter]
         public ReviewResponse Review { get; set; }
-       
+
         [CascadingParameter]
         private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-        private bool canEditAndDelete { get; set; }     
+        private bool canEditAndDelete { get; set; }
+
+        private bool confirmActionDialogOpen { get; set; }
 
         private int userId { get; set; }
+
+        private string movieLink { get; set; }
+
 
         protected override async Task OnParametersSetAsync()
         {
@@ -40,26 +50,73 @@ namespace Movies.BlazorWeb.Shared.Entities
                 {
                     userId = int.Parse(claim.Value);
 
-                    if (state.User.IsInRole(Enum.GetName(UserRoles.Producer)) && Review.ReviewerId == userId)
+                    if (state.User.IsInRole(Enum.GetName(UserRoles.Reviewer)) && Review.ReviewerId == userId)
                     {
                         canEditAndDelete = true;
                     }
                 }
             }
 
-            //movieLink = $"/movies/{Movie.MovieId}";
+            movieLink = $"/movies/{Review.MovieId}";
 
             await base.OnParametersSetAsync();
         }
 
-        private async Task OnDeleteAsync(ReviewResponse review)
+        private void ShowDeleteDialog()
         {
-            await OnDelete.InvokeAsync(review);
+            confirmActionDialogOpen = true;
+            DynamicRender = CreateComponent("Delete",
+                "Are you sure?",
+                ConfirmDialog.ModalDialogType.DeleteCancel,
+                null,
+                OnDeletedAsync);
         }
 
-        private async Task OnUpdateAsync(ReviewResponse review)
+        private void GoToEditReview()
         {
-            await OnEdit.InvokeAsync(review);
+            navigationManager.NavigateTo($"/reviews/{Review.ReviewId}/edit");
+        }
+
+        private async Task OnDeletedAsync(bool confirm)
+        {
+            if (confirm)
+            {
+                var result = await reviewService.DeleteReviewAsync(userId, Review.ReviewId);
+
+                if (result.ResultType == ResultType.Ok)
+                {
+                    await OnActionDoneAsync.InvokeAsync(Review);
+                    confirmActionDialogOpen = false;
+                }
+                else
+                {
+                    DynamicRender = CreateComponent("Error", null, ConfirmDialog.ModalDialogType.Ok, result, OnConfirmAsync);
+                }
+            }
+
+        }
+
+        private async Task OnConfirmAsync(bool confirm)
+        {
+            confirmActionDialogOpen = false;
+        }
+
+        private RenderFragment DynamicRender { get; set; }
+
+        private RenderFragment CreateComponent(string title, string text, ConfirmDialog.ModalDialogType dialogType, Result result, Func<bool, Task> task)
+        {
+            EventCallback<bool> callback = new EventCallbackFactory().Create<bool>(this, task);
+            return new RenderFragment((builder) =>
+            {
+                builder.OpenComponent(0, typeof(ConfirmDialog));
+                builder.AddAttribute(1, "Title", title);
+                builder.AddAttribute(2, "Text", text);
+                builder.AddAttribute(3, "DialogType", dialogType);
+                builder.AddAttribute(4, "Result", result);
+                builder.AddAttribute(4, "OnClose", callback);
+                builder.CloseComponent();
+            });
+
         }
     }
 }

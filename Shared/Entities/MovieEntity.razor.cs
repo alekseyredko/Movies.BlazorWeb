@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Rendering;
 using Movies.Data.Models;
 using Movies.Data.Results;
 using Movies.Data.Services.Interfaces;
@@ -15,10 +16,13 @@ namespace Movies.BlazorWeb.Shared.Entities
     public partial class MovieEntity: ComponentBase
     {        
         [Inject]
+        private IMovieService movieService { get; set; }
+
+        [Inject]
         NavigationManager navigationManager { get; set; }
 
         [Parameter]
-        public EventCallback<int> OnMovieDeleted { get; set; }
+        public EventCallback<MovieResponse> OnActionDoneAsync { get; set; }
 
         [Parameter]
         public MovieResponse Movie { get; set; }
@@ -26,13 +30,14 @@ namespace Movies.BlazorWeb.Shared.Entities
         [CascadingParameter]
         private Task<AuthenticationState> authenticationStateTask { get; set; }
         
-        private bool canEditAndDelete { get; set; }
+        private bool canEditAndDelete { get; set; }       
 
-        private bool deleteDialogOpen { get; set; }
+        private bool confirmActionDialogOpen { get; set; }
 
         private int userId { get; set; }
 
         private string movieLink { get; set; }
+                
 
         protected override async Task OnParametersSetAsync()
         {
@@ -60,24 +65,59 @@ namespace Movies.BlazorWeb.Shared.Entities
 
         private void ShowDeleteDialog()
         {            
-            deleteDialogOpen = true;
-            this.StateHasChanged();
-        }
+            confirmActionDialogOpen = true;
+            DynamicRender = CreateComponent("Delete",
+                "Are you sure?",
+                ConfirmDialog.ModalDialogType.DeleteCancel,
+                null,
+                OnDeletedAsync);
+        }       
 
         private void GoToEditMovie()
         {
             navigationManager.NavigateTo($"/movies/{Movie.MovieId}/edit");
         }
 
-        private async Task OnDeleteAsync(bool confirm)
+        private async Task OnDeletedAsync(bool confirm)
         {
             if (confirm)
-            {                
-                await OnMovieDeleted.InvokeAsync(Movie.MovieId);
+            {
+                var result = await movieService.DeleteMovieAsync(userId, Movie.MovieId);
 
-                this.StateHasChanged();
+                if (result.ResultType == ResultType.Ok)
+                {                    
+                    await OnActionDoneAsync.InvokeAsync(Movie);
+                    confirmActionDialogOpen = false;
+                }
+                else
+                {
+                    DynamicRender = CreateComponent("Error", null, ConfirmDialog.ModalDialogType.Ok, result, OnConfirmAsync);
+                }                                
             }
-            deleteDialogOpen = false;
+               
+        }
+
+        private async Task OnConfirmAsync(bool confirm)
+        {
+            confirmActionDialogOpen = false;
+        }
+
+        private RenderFragment DynamicRender { get; set; }
+
+        private RenderFragment CreateComponent(string title, string text, ConfirmDialog.ModalDialogType dialogType, Result result, Func<bool, Task> task)
+        {
+            EventCallback<bool> callback = new EventCallbackFactory().Create<bool>(this, task);
+            return new RenderFragment((builder) =>
+            {
+                builder.OpenComponent(0, typeof(ConfirmDialog));
+                builder.AddAttribute(1, "Title", title);
+                builder.AddAttribute(2, "Text", text);
+                builder.AddAttribute(3, "DialogType", dialogType);
+                builder.AddAttribute(4, "Result", result);
+                builder.AddAttribute(4, "OnClose", callback);
+                builder.CloseComponent();
+            });
+           
         }
     }
 }

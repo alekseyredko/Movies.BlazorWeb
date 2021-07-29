@@ -37,10 +37,8 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
             currentUser = await customAuthentication.GetCurrentUserDataAsync();                      
         }
 
-        private async Task OnMovieDeletedAsync(int id)
-        {
-            await movieService.DeleteMovieAsync(currentUser.Value.UserId, id);
-
+        private async Task OnMovieDeletedAsync(MovieResponse movie)
+        {           
             await LoadMoviesAsync(showOnlyMyMovies);
         }
       
@@ -59,7 +57,7 @@ namespace Movies.BlazorWeb.Pages.MoviesPages
             movies = mapper.Map<Result<IEnumerable<MovieResponse>>>(getMovies);
         }
 
-        private async Task OnShowInlyMyMoviesAsync(ChangeEventArgs e)
+        private async Task OnShowOnlyMyMoviesAsync(ChangeEventArgs e)
         {
             showOnlyMyMovies = (bool)e.Value;
             await LoadMoviesAsync(showOnlyMyMovies);

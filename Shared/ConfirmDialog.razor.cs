@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Movies.Data.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,9 @@ namespace Movies.BlazorWeb.Shared
 {
     public partial class ConfirmDialog
     {
+        [Parameter]
+        public Result Result { get; set; } 
+
         [Parameter]
         public int Id { get; set; }
 
@@ -21,7 +25,7 @@ namespace Movies.BlazorWeb.Shared
         public EventCallback<bool> OnClose { get; set; }
 
         [Parameter]
-        public ModalDialogType DialogType { get; set; }
+        public ModalDialogType DialogType { get; set; }      
 
         private Task ModalCancel()
         {

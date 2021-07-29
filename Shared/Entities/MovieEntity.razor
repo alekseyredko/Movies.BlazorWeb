@@ -1,4 +1,4 @@
-﻿<td>    
+﻿<td>
     <NavLink class="nav-justified" href="@movieLink">@Movie.MovieName</NavLink>
 </td>
 <td>
@@ -21,11 +21,7 @@
 </td>
 
 
-@if (deleteDialogOpen)
+@if (DynamicRender != null && confirmActionDialogOpen)
 {
-    <ConfirmDialog Title="Are you sure?"
-                   Text="Do you want to delete this entry?"
-                   OnClose="@OnDeleteAsync"
-                   DialogType="ConfirmDialog.ModalDialogType.DeleteCancel">
-    </ConfirmDialog>
+    @DynamicRender
 }

@@ -17,7 +17,7 @@ else
             <Authorized>
                 <div>
                     <input type="checkbox" name="my-movies"
-                           @onchange="OnShowInlyMyMoviesAsync" />
+                           @onchange="OnShowOnlyMyMoviesAsync" />
                     <label for="my-movies">Only my movies</label>
                 </div>
                 <div>
@@ -28,7 +28,7 @@ else
 
         <TableTemplate TItem="MovieResponse" Items="movies" Context="MovieResponse">
             <RowTemplate>
-                <MovieEntity Movie="@MovieResponse" OnMovieDeleted="OnMovieDeletedAsync"/>
+                <MovieEntity Movie="@MovieResponse" OnActionDoneAsync="OnMovieDeletedAsync"/>
             </RowTemplate>
         </TableTemplate>
     }
