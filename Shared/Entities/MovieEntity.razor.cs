@@ -43,7 +43,7 @@ namespace Movies.BlazorWeb.Shared.Entities
         {
             var state = await authenticationStateTask;
 
-            if (state.User.Identity.IsAuthenticated)
+            if (state.User.Identity != null && state.User.Identity.IsAuthenticated)
             {
                 var claim = state.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 

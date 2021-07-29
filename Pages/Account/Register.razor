@@ -2,18 +2,16 @@
 
 <h3>Register</h3>
 
-<form >
-    <SpecificErrorResult Key="Login" Result="result" />
-    <input type="text" @bind-value="registerUserRequest.Login" />
+<SpecificErrorResult Key="Login" Result="result" />
+<input type="text" @bind-value="registerUserRequest.Login" />
 
-    <SpecificErrorResult Key="Name" Result="result" />
-    <input type="text" @bind-value="registerUserRequest.Name" />
+<SpecificErrorResult Key="Name" Result="result" />
+<input type="text" @bind-value="registerUserRequest.Name" />
 
-    <SpecificErrorResult Key="Password" Result="result" />
-    <input type="password" @bind-value="registerUserRequest.Password" />
+<SpecificErrorResult Key="Password" Result="result" />
+<input type="password" @bind-value="registerUserRequest.Password" />
 
-    <button @onclick="TryRegisterAsync">Register</button>
-</form>
+<button @onclick="TryRegisterAsync">Register</button>
 
 
 
