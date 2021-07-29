@@ -41,11 +41,11 @@ namespace Movies.BlazorWeb
             services.AddDataAccessServicesForBlazor();
             services.RegisterValidatorsAsServices();
 
-            services.AddTransient<ServerAuthenticationStateProvider, UserAuthenticationStateProvider>();
-            services.AddTransient<AuthenticationStateProvider>(provider =>
+            services.AddScoped<ServerAuthenticationStateProvider, UserAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(provider =>
                 provider.GetRequiredService<ServerAuthenticationStateProvider>());
 
-            services.AddTransient<ICustomAuthentication, CustomAuthentication>();
+            services.AddScoped<ICustomAuthentication, CustomAuthentication>();
 
             services.AddAutomapperAndProfile();
         }
