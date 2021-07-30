@@ -41,9 +41,10 @@ namespace Movies.BlazorWeb.Pages.Reviews
 
             currentUser = await customAuthentication.GetCurrentUserDataAsync();
 
-            await base.OnInitializedAsync();
+            await base.OnParametersSetAsync();
         }
 
+       
         private async Task LoadReviewsAsync(bool showOnlyMyReviews)
         {
             var getReviews = new Result<IEnumerable<Review>>();
@@ -66,8 +67,7 @@ namespace Movies.BlazorWeb.Pages.Reviews
                 {
                     getReviews = await reviewService.GetAllReviewsAsync();
                 }
-            }            
-
+            }
             reviews = mapper.Map<Result<IEnumerable<Review>>, Result<IEnumerable<ReviewResponse>>>(getReviews);
         }
 
