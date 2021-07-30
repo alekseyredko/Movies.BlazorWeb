@@ -21,5 +21,29 @@ namespace Movies.BlazorWeb.Shared.TableTemplate
            
         [Parameter]
         public Result<IEnumerable<TItem>> Items { get; set; }
+
+        private bool shouldRender = true;
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            var parameter = parameters.GetValueOrDefault<Result<IEnumerable<TItem>>>("Items");
+
+            if (parameter != null && parameter.ResultType == ResultType.Ok)
+            {
+                if (Items != null && Items.ResultType == ResultType.Ok)
+                {
+                    if (parameter.Value.Count() == Items.Value.Count())
+                    {
+                        shouldRender = false;
+                        await base.SetParametersAsync(parameters);
+                        return;
+                    }
+                }
+            }
+            shouldRender = true;
+            await base.SetParametersAsync(parameters);
+        }
+
+        protected override bool ShouldRender() => shouldRender;
     }
 }
