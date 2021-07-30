@@ -54,6 +54,10 @@ namespace Movies.BlazorWeb.Shared.Entities
                     {
                         canEditAndDelete = true;
                     }
+                    else
+                    {
+                        canEditAndDelete = false;
+                    }
                 }
             }
 
