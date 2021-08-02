@@ -43,12 +43,13 @@ else
     protected override async Task OnParametersSetAsync()
     {
         connection = new HubConnectionBuilder()
-            .WithUrl(navigationManager.ToAbsoluteUri("/movies/{id}/chat"))
+            .WithUrl(navigationManager.ToAbsoluteUri($"/movies/{Id}/chat"))
             .Build();
 
         connection.On<ChatMessageRequest>("ReceiveMessageAsync", request =>
         {
             ChatMessageService.AddMessage(messages, request);
+            StateHasChanged();
         });
 
         await connection.StartAsync();
@@ -66,8 +67,8 @@ else
             NickName = "Vasya"
         };
 
-        ChatMessageService.AddMessage(messages, comment);
-
+        await connection.SendAsync("SendMessageAsync", comment);
+       
         parentMessage = null;
     }
 

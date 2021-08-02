@@ -16,6 +16,7 @@ using Movies.Infrastructure.Services;
 using Movies.Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
 using Movies.Infrastructure.Hubs;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace Movies.BlazorWeb
 {
@@ -47,11 +48,18 @@ namespace Movies.BlazorWeb
             services.AddAutomapperAndProfile();
 
             services.AddSignalR();
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

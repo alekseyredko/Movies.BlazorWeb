@@ -9,11 +9,11 @@
         <ul level="@Level">
             @foreach(var child in ChatMessage.Replies)
             {
-                <Message ChatMessage="@child" Level="@(Level + 1)" OnReplyCallback="@OnReply"/>    
+                <Message ChatMessage="@child" Level="@(Level + 1)" OnReplyCallback="@OnChildReply"/>    
             }
         </ul>>
 
-        <button @onclick="OnReply">Reply</button>
+        <button @onclick="@OnReply">Reply</button>
     </li>
 }
 
@@ -31,5 +31,10 @@
     private async Task OnReply()
     {
         await OnReplyCallback.InvokeAsync(ChatMessage);
+    }
+
+    private async Task OnChildReply(ChatMessageResponse response)
+    {
+        await OnReplyCallback.InvokeAsync(response);
     }
 }
