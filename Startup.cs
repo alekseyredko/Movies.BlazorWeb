@@ -15,6 +15,7 @@ using Movies.Infrastructure.Extensions;
 using Movies.Infrastructure.Services;
 using Movies.Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
+using Movies.Infrastructure.Hubs;
 
 namespace Movies.BlazorWeb
 {
@@ -44,6 +45,8 @@ namespace Movies.BlazorWeb
             services.AddBlazorWebServerAuth();
 
             services.AddAutomapperAndProfile();
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,6 +71,7 @@ namespace Movies.BlazorWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
+                endpoints.MapHub<MovieChatHub>("/movies/{id}/chat");
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

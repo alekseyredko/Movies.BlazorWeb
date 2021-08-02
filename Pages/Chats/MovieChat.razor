@@ -1,0 +1,86 @@
+﻿@page "/movies/{id:int}/chat"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using Movies.Infrastructure.Models.Messages
+@implements IAsyncDisposable
+<h3>MovieChat</h3>
+
+@if(messages == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul level="0">
+        @foreach(var message in messages)
+        {
+            <Message ChatMessage="@message" OnReplyCallback="GetMessageToReply" Level=1/>
+        }
+   
+        <input @bind="@comment.Message"/>
+        <button @onclick="PostComment">Submit</button>
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public int Id{ get; set; }
+
+    [Inject]
+    private NavigationManager navigationManager{ get; set; }
+
+    private HubConnection connection;
+    private List<ChatMessageResponse> messages;
+    private ChatMessageResponse parentMessage;
+    private ChatMessageRequest comment;
+
+    protected override void OnInitialized()
+    {
+        messages = new List<ChatMessageResponse>();
+        comment = new ChatMessageRequest();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        connection = new HubConnectionBuilder()
+            .WithUrl(navigationManager.ToAbsoluteUri("/movies/{id}/chat"))
+            .Build();
+
+        connection.On<ChatMessageRequest>("ReceiveMessageAsync", request =>
+        {
+            ChatMessageService.AddMessage(messages, request);
+        });
+
+        await connection.StartAsync();
+    }
+
+    private async Task PostComment()
+    {
+        if(parentMessage != null)
+        {
+            comment.ParentMessageId = parentMessage.ChatMessageId;
+        }
+
+        comment.Reviewer = new Infrastructure.Models.Reviewer.ReviewerResponse
+        {
+            NickName = "Vasya"
+        };
+
+        ChatMessageService.AddMessage(messages, comment);
+
+        parentMessage = null;
+    }
+
+    private void GetMessageToReply(ChatMessageResponse response)
+    {
+        parentMessage = response;   
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (connection != null)
+        {
+            await connection.DisposeAsync();
+        }
+    }
+}

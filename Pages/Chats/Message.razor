@@ -1,0 +1,35 @@
+﻿@using Movies.Infrastructure.Models.Messages
+
+@if(ChatMessage != null)
+{    
+    <li>
+        <p>@ChatMessage.Reviewer.NickName</p>
+        <p>@ChatMessage.Message</p>
+        <p>@ChatMessage.DateTime</p>
+        <ul level="@Level">
+            @foreach(var child in ChatMessage.Replies)
+            {
+                <Message ChatMessage="@child" Level="@(Level + 1)" OnReplyCallback="@OnReply"/>    
+            }
+        </ul>>
+
+        <button @onclick="OnReply">Reply</button>
+    </li>
+}
+
+@code {
+
+    [Parameter]
+    public ChatMessageResponse ChatMessage { get ;set; }
+
+    [Parameter]
+    public EventCallback<ChatMessageResponse> OnReplyCallback{ get; set; }
+
+    [Parameter]
+    public int Level{ get; set; }
+
+    private async Task OnReply()
+    {
+        await OnReplyCallback.InvokeAsync(ChatMessage);
+    }
+}
