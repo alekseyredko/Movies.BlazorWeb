@@ -1,87 +1,23 @@
 ﻿@page "/movies/{id:int}/chat"
 
-@using Microsoft.AspNetCore.SignalR.Client
-@using Movies.Infrastructure.Models.Messages
+<AuthorizeView>
+    <Authorized>
+        <h3>MovieChat</h3>
 
-<h3>MovieChat</h3>
-
-@if(messages == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <ul level="0">
-        @foreach(var message in messages)
+        @if(messages == null)
         {
-            <Message ChatMessage="@message" OnReplyCallback="GetMessageToReply" Level=1/>
-        }     
-    </ul>
-    <input @bind="@comment.Message"/>
-    <button @onclick="PostComment">Submit</button>
-}
-
-@code {
-    [Parameter]
-    public int Id{ get; set; }
-
-    [Inject]
-    private NavigationManager navigationManager{ get; set; }
-
-    [Inject]
-    private ChatMessageService messageService{ get; set; }
-
-    private HubConnection connection;
-    private List<ChatMessageResponse> messages;
-    private ChatMessageResponse parentMessage;
-    private ChatMessageRequest comment;
-
-    protected override void OnInitialized()
-    {
-        messages = new List<ChatMessageResponse>();
-        comment = new ChatMessageRequest();
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        connection = new HubConnectionBuilder()
-            .WithUrl(navigationManager.ToAbsoluteUri($"/chat"))
-            .WithAutomaticReconnect()
-            .Build();
-
-        connection.On<ChatMessageRequest>("ReceiveMessageAsync", request =>
-        {
-            messageService.AddMessage(messages, request);
-            StateHasChanged();
-
-            comment = new ChatMessageRequest();
-            parentMessage = null;
-        });
-
-        await connection.StartAsync();
-
-        await connection.SendAsync("AddUserToGroup", $"{Id}");
-    }
-
-    private async Task PostComment()
-    {
-        if(parentMessage != null)
-        {
-            comment.ParentMessageId = parentMessage.ChatMessageId;
+            <p>Loading...</p>
         }
-
-        comment.Reviewer = new Infrastructure.Models.Reviewer.ReviewerResponse
+        else
         {
-            NickName = "Vasya"
-        };
-
-        await connection.SendAsync("SendMessageAsync", comment, $"{Id}");
-    }
-
-    private void GetMessageToReply(ChatMessageResponse response)
-    {
-        parentMessage = response;   
-    }
-
-    
-}
+            <ul level="0">
+                @foreach(var message in messages)
+                {
+                    <Message ChatMessage="@message" OnReplyCallback="GetMessageToReply" Level=1/>
+                }     
+            </ul>
+            <input @bind="@comment.Message"/>
+            <button @onclick="PostComment">Submit</button>
+        }
+    </Authorized>
+</AuthorizeView>

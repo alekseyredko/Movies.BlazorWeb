@@ -11,7 +11,7 @@ namespace Movies.BlazorWeb.Pages.Account
         {
             await customAuthentication.LogoutAsync();
 
-            navigationManager.NavigateTo("/");
+            navigationManager.NavigateTo("/", true);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Movies.BlazorWeb.Pages.Account
 
             if (result.ResultType == ResultType.Ok)
             {                
-                navigationManager.NavigateTo("/");
+                navigationManager.NavigateTo("/", true);
             }
         }
     }

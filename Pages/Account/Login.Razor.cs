@@ -37,7 +37,7 @@ namespace Movies.BlazorWeb.Pages.Account
             response = await customAuthentication.TryLoginAsync(loginUserRequest);
             if (response.ResultType == ResultType.Ok)
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/", true);
             }
         }
     }
