@@ -6,6 +6,7 @@
         <p>@ChatMessage.Reviewer.NickName</p>
         <p>@ChatMessage.Message</p>
         <p>@ChatMessage.DateTime</p>
+        <button @onclick="@OnReply">Reply</button>
         <ul level="@Level">
             @foreach(var child in ChatMessage.Replies)
             {
@@ -13,7 +14,7 @@
             }
         </ul>>
 
-        <button @onclick="@OnReply">Reply</button>
+        
     </li>
 }
 

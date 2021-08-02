@@ -17,6 +17,7 @@ using Movies.Infrastructure.Services.Interfaces;
 using Newtonsoft.Json;
 using Movies.Infrastructure.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
+using Movies.Infrastructure.Models.Messages;
 
 namespace Movies.BlazorWeb
 {
@@ -53,6 +54,7 @@ namespace Movies.BlazorWeb
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
+            services.AddTransient<ChatMessageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +81,7 @@ namespace Movies.BlazorWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
-                endpoints.MapHub<MovieChatHub>("/movies/{id}/chat");
+                endpoints.MapHub<MovieChatHub>("/chat");
                 endpoints.MapFallbackToPage("/_Host");
             });
         }
