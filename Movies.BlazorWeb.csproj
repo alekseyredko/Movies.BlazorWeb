@@ -11,10 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Movies.BlazorWeb.Infrastructure\Movies.BlazorWeb.Infrastructure.csproj" />
     <ProjectReference Include="..\Movies.Infrastructure\Movies.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Shared\ChatMessage\" />
   </ItemGroup>
 </Project>
